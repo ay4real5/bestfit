@@ -11,7 +11,6 @@ import {
   Search,
   Heart,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { useWishlist } from "./WishlistProvider";
@@ -63,36 +62,57 @@ export default function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="hidden md:flex">
-            <Search className="h-5 w-5" />
-          </Button>
-          <Link href="/wishlist">
-            <Button variant="ghost" size="icon" className="relative hidden md:flex">
-              <Heart className="h-5 w-5" />
-              {wishlistCount > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-[10px] flex items-center justify-center"
-                >
-                  {wishlistCount}
-                </Badge>
-              )}
-            </Button>
+          <Link
+            href="/products"
+            className="hidden md:flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
+          >
+            <Search className="h-5 w-5 text-slate-600" />
+          </Link>
+          <Link
+            href="/wishlist"
+            className="relative hidden md:flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
+          >
+            <Heart className="h-5 w-5 text-slate-600" />
+            {wishlistCount > 0 && (
+              <Badge
+                variant="secondary"
+                className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-[10px] flex items-center justify-center"
+              >
+                {wishlistCount}
+              </Badge>
+            )}
           </Link>
 
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-[10px] flex items-center justify-center"
-                >
-                  {totalItems}
-                </Badge>
-              )}
-            </Button>
+          <Link
+            href="/cart"
+            className="relative flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
+          >
+            <ShoppingCart className="h-5 w-5 text-slate-600" />
+            {totalItems > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-[10px] flex items-center justify-center"
+              >
+                {totalItems}
+              </Badge>
+            )}
           </Link>
+
+          {isLoggedIn ? (
+            <Link
+              href="/account"
+              className="hidden md:flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium hover:bg-slate-100 transition-colors"
+            >
+              {customer?.name?.split(" ")[0] || "Account"}
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden md:flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium hover:bg-slate-100 transition-colors"
+            >
+              Login
+            </Link>
+          )}
 
           {/* Mobile Menu */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -128,6 +148,13 @@ export default function Header() {
                       {link.label}
                     </Link>
                   ))}
+                  <Link
+                    href={isLoggedIn ? "/account" : "/login"}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-lg font-medium text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {isLoggedIn ? "My Account" : "Login"}
+                  </Link>
                 </nav>
               </div>
             </SheetContent>

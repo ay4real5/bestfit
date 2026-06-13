@@ -135,8 +135,11 @@ export default function CartPage() {
             >
               Clear Cart
             </button>
-            <Link href="/products">
-              <Button variant="outline">Continue Shopping</Button>
+            <Link
+              href="/products"
+              className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium hover:bg-slate-100 transition-colors"
+            >
+              Continue Shopping
             </Link>
           </div>
         </div>
@@ -218,10 +221,11 @@ export default function CartPage() {
               )}
             </CardContent>
             <CardFooter className="p-6 pt-0">
-              <Link href="/checkout" className="w-full">
-                <Button size="lg" className="w-full gap-2">
-                  Checkout <ArrowRight className="h-4 w-4" />
-                </Button>
+              <Link
+                href="/checkout"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-base font-medium text-white hover:bg-primary/90 transition-colors"
+              >
+                Checkout <ArrowRight className="h-4 w-4" />
               </Link>
             </CardFooter>
           </Card>
