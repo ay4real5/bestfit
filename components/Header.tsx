@@ -30,11 +30,11 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-stone-200 bg-white/80 backdrop-blur-xl">
+      <div className="container mx-auto flex h-[72px] items-center justify-between px-4 md:px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
-          <div className="relative h-16 w-16">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="relative h-12 w-12">
             <Image
               src="/WhatsApp Image 2026-06-13 at 11.08.23.jpeg"
               alt="Fest Fit Supplements Logo"
@@ -42,18 +42,18 @@ export default function Header() {
               className="object-contain"
             />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-foreground">
+          <span className="text-xl font-bold tracking-tight text-stone-900">
             Fest Fit
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="text-sm font-medium text-stone-500 transition-colors hover:text-stone-900 relative after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
             >
               {link.label}
             </Link>
@@ -61,54 +61,48 @@ export default function Header() {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Link
             href="/products"
-            className="hidden md:flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
+            className="hidden md:flex h-10 w-10 items-center justify-center rounded-full text-stone-500 transition-all hover:bg-stone-100 hover:text-stone-900"
           >
-            <Search className="h-5 w-5 text-slate-600" />
+            <Search className="h-[18px] w-[18px]" />
           </Link>
           <Link
             href="/wishlist"
-            className="relative hidden md:flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
+            className="relative hidden md:flex h-10 w-10 items-center justify-center rounded-full text-stone-500 transition-all hover:bg-stone-100 hover:text-stone-900"
           >
-            <Heart className="h-5 w-5 text-slate-600" />
+            <Heart className="h-[18px] w-[18px]" />
             {wishlistCount > 0 && (
-              <Badge
-                variant="secondary"
-                className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-[10px] flex items-center justify-center"
-              >
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
                 {wishlistCount}
-              </Badge>
+              </span>
             )}
           </Link>
 
           <Link
             href="/cart"
-            className="relative flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full text-stone-500 transition-all hover:bg-stone-100 hover:text-stone-900"
           >
-            <ShoppingCart className="h-5 w-5 text-slate-600" />
+            <ShoppingCart className="h-[18px] w-[18px]" />
             {totalItems > 0 && (
-              <Badge
-                variant="destructive"
-                className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-[10px] flex items-center justify-center"
-              >
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
                 {totalItems}
-              </Badge>
+              </span>
             )}
           </Link>
 
           {isLoggedIn ? (
             <Link
               href="/account"
-              className="hidden md:flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium hover:bg-slate-100 transition-colors"
+              className="hidden md:ml-2 md:inline-flex h-9 items-center justify-center rounded-full bg-stone-900 px-4 text-sm font-medium text-white transition-all hover:bg-stone-800"
             >
               {customer?.name?.split(" ")[0] || "Account"}
             </Link>
           ) : (
             <Link
               href="/login"
-              className="hidden md:flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium hover:bg-slate-100 transition-colors"
+              className="hidden md:ml-2 md:inline-flex h-9 items-center justify-center rounded-full border border-stone-200 px-4 text-sm font-medium text-stone-700 transition-all hover:border-stone-300 hover:bg-stone-50"
             >
               Login
             </Link>
@@ -116,18 +110,18 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-slate-100 transition-colors">
+            <SheetTrigger className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-full text-stone-600 transition-colors hover:bg-stone-100">
               <Menu className="h-5 w-5" />
             </SheetTrigger>
-            <SheetContent side="right" className="w-72">
+            <SheetContent side="right" className="w-80 border-l border-stone-200">
               <SheetTitle className="sr-only">Navigation</SheetTitle>
-              <div className="flex flex-col gap-6 pt-8">
+              <div className="flex flex-col gap-8 pt-10">
                 <Link
                   href="/"
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-3"
                 >
-                  <div className="relative h-14 w-14">
+                  <div className="relative h-12 w-12">
                     <Image
                       src="/WhatsApp Image 2026-06-13 at 11.08.23.jpeg"
                       alt="Fest Fit Supplements Logo"
@@ -135,15 +129,15 @@ export default function Header() {
                       className="object-contain"
                     />
                   </div>
-                  <span className="text-2xl font-bold">Fest Fit</span>
+                  <span className="text-xl font-bold text-stone-900">Fest Fit</span>
                 </Link>
-                <nav className="flex flex-col gap-4">
+                <nav className="flex flex-col gap-1">
                   {navLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="text-lg font-medium text-muted-foreground transition-colors hover:text-primary"
+                      className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900"
                     >
                       {link.label}
                     </Link>
@@ -151,7 +145,7 @@ export default function Header() {
                   <Link
                     href={isLoggedIn ? "/account" : "/login"}
                     onClick={() => setMobileOpen(false)}
-                    className="text-lg font-medium text-muted-foreground transition-colors hover:text-primary"
+                    className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900"
                   >
                     {isLoggedIn ? "My Account" : "Login"}
                   </Link>

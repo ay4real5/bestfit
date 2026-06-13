@@ -25,43 +25,43 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-slate-900 py-20 md:py-32">
-        <div className="absolute inset-0 opacity-20">
+      <section className="relative overflow-hidden bg-stone-950 py-24 md:py-36">
+        <div className="absolute inset-0">
           <Image
             src="https://picsum.photos/seed/festfithero/1600/900"
             alt="Gym background"
             fill
-            className="object-cover"
+            className="object-cover opacity-30"
             priority
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/60 via-stone-950/80 to-stone-950" />
         </div>
         <div className="container relative mx-auto px-4 md:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <Badge className="mb-4 bg-primary/20 text-primary border-primary/30">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="mb-6 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium tracking-wide text-primary uppercase">
               Premium Supplements
-            </Badge>
-            <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-white md:text-6xl">
+            </span>
+            <h1 className="mb-6 text-5xl font-bold tracking-tight text-white md:text-7xl leading-[1.1]">
               Fuel Your{" "}
-              <span className="text-primary">Fitness</span> Journey
+              <span className="text-primary">Fitness</span>{" "}
+              Journey
             </h1>
-            <p className="mb-8 text-lg text-slate-300">
+            <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-stone-400">
               High-quality protein, pre-workout, vitamins, and recovery
               supplements trusted by athletes worldwide.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row justify-center">
-              <Link href="/products">
-                <Button size="lg" className="gap-2">
-                  Shop Now <ArrowRight className="h-4 w-4" />
-                </Button>
+            <div className="flex flex-col gap-4 sm:flex-row justify-center">
+              <Link
+                href="/products"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40"
+              >
+                Shop Now <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="#featured">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10"
-                >
-                  View Best Sellers
-                </Button>
+              <Link
+                href="#featured"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-700 bg-stone-900/50 px-8 py-3.5 text-sm font-semibold text-stone-300 backdrop-blur-sm transition-all hover:border-stone-600 hover:bg-stone-800 hover:text-white"
+              >
+                View Best Sellers
               </Link>
             </div>
           </div>
@@ -69,41 +69,25 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="border-b bg-white py-12">
+      <section className="border-b border-stone-200 bg-white py-16">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              {
-                icon: Truck,
-                title: "Free Shipping",
-                desc: "On orders over $50",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Lab Tested",
-                desc: "Quality guaranteed",
-              },
-              {
-                icon: Star,
-                title: "Top Rated",
-                desc: "4.9/5 customer reviews",
-              },
-              {
-                icon: Clock,
-                title: "Fast Delivery",
-                desc: "2-3 business days",
-              },
+              { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
+              { icon: ShieldCheck, title: "Lab Tested", desc: "Quality guaranteed" },
+              { icon: Star, title: "Top Rated", desc: "4.9/5 customer reviews" },
+              { icon: Clock, title: "Fast Delivery", desc: "2-3 business days" },
             ].map((f) => (
               <div
                 key={f.title}
-                className="flex items-center gap-4 rounded-xl border p-4"
+                className="group flex items-center gap-4 rounded-2xl border border-stone-100 bg-stone-50/50 p-5 transition-all hover:border-primary/20 hover:bg-white hover:shadow-lg hover:shadow-stone-200/50"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
                   <f.icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground">{f.desc}</p>
+                  <p className="font-semibold text-stone-800">{f.title}</p>
+                  <p className="text-sm text-stone-500">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -112,34 +96,29 @@ export default function Home() {
       </section>
 
       {/* Categories */}
-      <section className="py-16 bg-slate-50">
+      <section className="py-20 bg-stone-50">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-10 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">Shop by Category</h2>
-            <p className="mt-2 text-muted-foreground">
-              Find the perfect supplement for your goals
-            </p>
+          <div className="mb-12 text-center">
+            <span className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-primary">Browse</span>
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">Shop by Category</h2>
+            <p className="mt-3 text-stone-500">Find the perfect supplement for your goals</p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {categories.slice(0, 4).map((cat) => (
-              <Link
-                key={cat}
-                href={`/products?category=${encodeURIComponent(cat)}`}
-              >
-                <Card className="group cursor-pointer transition-shadow hover:shadow-md">
-                  <CardContent className="flex items-center justify-between p-6">
-                    <div>
-                      <h3 className="font-semibold group-hover:text-primary transition-colors">
-                        {cat}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {allProducts.filter((p) => p.category === cat).length}{" "}
-                        products
-                      </p>
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </CardContent>
-                </Card>
+              <Link key={cat} href={`/products?category=${encodeURIComponent(cat)}`}>
+                <div className="group flex items-center justify-between rounded-2xl border border-stone-200 bg-white p-6 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-stone-200/40">
+                  <div>
+                    <h3 className="text-lg font-semibold text-stone-800 group-hover:text-primary transition-colors">
+                      {cat}
+                    </h3>
+                    <p className="mt-1 text-sm text-stone-500">
+                      {allProducts.filter((p) => p.category === cat).length} products
+                    </p>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-stone-400 transition-all group-hover:bg-primary group-hover:text-white">
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
@@ -147,19 +126,19 @@ export default function Home() {
       </section>
 
       {/* Featured Products */}
-      <section id="featured" className="py-16">
+      <section id="featured" className="py-20 bg-white">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-10 flex items-end justify-between">
+          <div className="mb-12 flex items-end justify-between">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Featured Products</h2>
-              <p className="mt-2 text-muted-foreground">
-                Our most popular supplements
-              </p>
+              <span className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-primary">Featured</span>
+              <h2 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">Featured Products</h2>
+              <p className="mt-3 text-stone-500">Our most popular supplements</p>
             </div>
-            <Link href="/products">
-              <Button variant="ghost" className="gap-2">
-                View All <ArrowRight className="h-4 w-4" />
-              </Button>
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              View All <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -209,70 +188,70 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
   };
 
   return (
-    <Card className="group h-full overflow-hidden transition-shadow hover:shadow-lg">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white transition-all hover:border-stone-200 hover:shadow-xl hover:shadow-stone-200/40">
       <div className="relative">
         <Link href={`/products/${product.slug}`} className="block">
-          <div className="relative aspect-square overflow-hidden bg-slate-100">
+          <div className="relative aspect-square overflow-hidden bg-stone-100">
             <Image
               src={product.image}
               alt={product.name}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             {product.compareAtPrice && (
-              <Badge className="absolute left-2 top-2 bg-destructive text-white">
+              <span className="absolute left-3 top-3 rounded-full bg-red-500 px-2.5 py-1 text-xs font-semibold text-white">
                 Sale
-              </Badge>
+              </span>
             )}
             <button
               onClick={handleWishlist}
-              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-colors hover:bg-white pointer-events-auto"
+              className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-sm transition-all hover:bg-white hover:scale-105 pointer-events-auto"
             >
               <Heart
-                className={`h-4 w-4 ${inWishlist ? "fill-red-500 text-red-500" : "text-slate-600"}`}
+                className={`h-4 w-4 transition-colors ${inWishlist ? "fill-red-500 text-red-500" : "text-stone-500 hover:text-red-500"}`}
               />
             </button>
           </div>
         </Link>
         {/* Quick Add overlay on hover */}
-        <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
+        <div className="absolute inset-x-0 bottom-0 flex justify-center pb-5 opacity-0 transition-all duration-300 group-hover:opacity-100 pointer-events-none">
           <button
             type="button"
-            className="pointer-events-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-primary/90"
+            className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white shadow-lg transition-transform hover:scale-105 hover:bg-stone-800"
             onClick={handleQuickAdd}
           >
-            <ShoppingCart className="h-3.5 w-3.5" /> Quick Add
+            <ShoppingCart className="h-4 w-4" /> Quick Add
           </button>
         </div>
       </div>
-      <CardContent className="p-4">
+      <div className="flex flex-1 flex-col p-5">
         <Link href={`/products/${product.slug}`}>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
             {product.category}
           </p>
-          <h3 className="mt-1 font-semibold leading-tight group-hover:text-primary transition-colors">
+          <h3 className="mt-1.5 text-[15px] font-semibold leading-snug text-stone-800 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>
-      </CardContent>
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold">${product.price.toFixed(2)}</span>
-          {product.compareAtPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              ${product.compareAtPrice.toFixed(2)}
-            </span>
-          )}
+        <div className="mt-auto flex items-center justify-between pt-4">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg font-bold text-stone-900">${product.price.toFixed(2)}</span>
+            {product.compareAtPrice && (
+              <span className="text-sm text-stone-400 line-through">
+                ${product.compareAtPrice.toFixed(2)}
+              </span>
+            )}
+          </div>
+          <button
+            onClick={handleQuickAdd}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-all hover:bg-primary hover:text-white"
+            type="button"
+          >
+            <ShoppingCart className="h-4 w-4" />
+          </button>
         </div>
-        <button
-          onClick={handleQuickAdd}
-          className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
-          type="button"
-        >
-          <ShoppingCart className="h-4 w-4 text-slate-600" />
-        </button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }
 
