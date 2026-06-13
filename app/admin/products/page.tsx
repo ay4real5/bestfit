@@ -73,6 +73,7 @@ export default function AdminProductsPage() {
     inventory: 0,
     featured: false,
     createdAt: new Date().toISOString().split("T")[0],
+    deliveryCost: 0,
   };
 
   const [form, setForm] = useState<Product>(emptyProduct);
@@ -160,6 +161,7 @@ export default function AdminProductsPage() {
               <TableHead>Product</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Delivery</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Featured</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -185,6 +187,7 @@ export default function AdminProductsPage() {
                   <Badge variant="secondary">{product.category}</Badge>
                 </TableCell>
                 <TableCell>${product.price.toFixed(2)}</TableCell>
+                <TableCell>${product.deliveryCost?.toFixed(2) || "0.00"}</TableCell>
                 <TableCell>
                   <span className={product.inStock ? "text-green-600" : "text-red-600"}>
                     {product.inventory}
@@ -220,7 +223,7 @@ export default function AdminProductsPage() {
             ))}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                   No products found.
                 </TableCell>
               </TableRow>
@@ -281,9 +284,9 @@ export default function AdminProductsPage() {
               />
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="space-y-2">
-                <Label htmlFor="price">Price *</Label>
+                <Label htmlFor="price">Price ($) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -295,7 +298,7 @@ export default function AdminProductsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="comparePrice">Compare-at Price</Label>
+                <Label htmlFor="comparePrice">Compare-at ($)</Label>
                 <Input
                   id="comparePrice"
                   type="number"
@@ -312,7 +315,7 @@ export default function AdminProductsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="inventory">Inventory *</Label>
+                <Label htmlFor="inventory">Stock *</Label>
                 <Input
                   id="inventory"
                   type="number"
@@ -323,6 +326,18 @@ export default function AdminProductsPage() {
                       inventory: parseInt(e.target.value) || 0,
                       inStock: (parseInt(e.target.value) || 0) > 0,
                     })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="deliveryCost">Delivery Cost ($)</Label>
+                <Input
+                  id="deliveryCost"
+                  type="number"
+                  step="0.01"
+                  value={form.deliveryCost}
+                  onChange={(e) =>
+                    setForm({ ...form, deliveryCost: parseFloat(e.target.value) || 0 })
                   }
                 />
               </div>

@@ -7,7 +7,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Package, User, MapPin, Phone, LogOut, ArrowLeft } from "lucide-react";
+import { Package, User, MapPin, Phone, LogOut, ArrowLeft, Truck, CreditCard, Building2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AccountPage() {
@@ -110,9 +110,18 @@ export default function AccountPage() {
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <p className="font-medium">{order.id}</p>
-                          <p className="text-xs text-muted-foreground">{order.createdAt}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
                         </div>
-                        <Badge variant="secondary">{order.status}</Badge>
+                        <Badge variant="secondary">{order.status.replace("_", " ")}</Badge>
+                      </div>
+                      <div className="mb-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                        <span className="inline-flex items-center gap-1 capitalize">
+                          <Truck className="h-3 w-3" /> {order.deliveryMethod}
+                        </span>
+                        <span className="inline-flex items-center gap-1 capitalize">
+                          {order.paymentMethod === "bank_transfer" ? <Building2 className="h-3 w-3" /> : <CreditCard className="h-3 w-3" />}
+                          {order.paymentMethod.replace("_", " ")}
+                        </span>
                       </div>
                       <div className="space-y-1 text-sm">
                         {order.items.map((item, i) => (
@@ -125,10 +134,26 @@ export default function AccountPage() {
                         ))}
                       </div>
                       <Separator className="my-2" />
-                      <div className="flex justify-between font-semibold">
-                        <span>Total</span>
-                        <span>${order.total.toFixed(2)}</span>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Subtotal</span>
+                          <span>${order.subtotal?.toFixed(2) || order.total.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Delivery</span>
+                          <span>${order.deliveryCost?.toFixed(2) || "0.00"}</span>
+                        </div>
+                        <div className="flex justify-between font-semibold">
+                          <span>Total</span>
+                          <span>${order.total.toFixed(2)}</span>
+                        </div>
                       </div>
+                      {order.proofOfPayment && (
+                        <div className="mt-3">
+                          <p className="text-xs text-muted-foreground mb-1">Proof of Payment:</p>
+                          <img src={order.proofOfPayment} alt="Proof" className="max-h-32 rounded border" />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

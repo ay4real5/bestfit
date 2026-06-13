@@ -14,8 +14,18 @@ interface Customer {
 interface OrderRecord {
   id: string;
   items: { name: string; quantity: number; price: number }[];
+  subtotal: number;
+  deliveryCost: number;
   total: number;
   status: string;
+  customerEmail: string;
+  customerName: string;
+  address: string;
+  city: string;
+  phone: string;
+  deliveryMethod: "pickup" | "delivery";
+  paymentMethod: "bank_transfer" | "card";
+  proofOfPayment?: string;
   createdAt: string;
 }
 
@@ -27,17 +37,25 @@ interface AuthContextType {
   logout: () => void;
   addOrder: (order: OrderRecord) => void;
   isLoggedIn: boolean;
+  // Admin order management
+  allOrders: OrderRecord[];
+  updateOrderStatus: (orderId: string, status: string) => void;
+  getOrders: () => OrderRecord[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const ALL_ORDERS_KEY = "festfit_all_orders";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [orders, setOrders] = useState<OrderRecord[]>([]);
+  const [allOrders, setAllOrders] = useState<OrderRecord[]>([]);
 
   useEffect(() => {
     const savedCustomer = localStorage.getItem("festfit_customer");
     const savedOrders = localStorage.getItem("festfit_customer_orders");
+    const savedAllOrders = localStorage.getItem(ALL_ORDERS_KEY);
     if (savedCustomer) {
       try {
         setCustomer(JSON.parse(savedCustomer));
@@ -46,6 +64,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (savedOrders) {
       try {
         setOrders(JSON.parse(savedOrders));
+      } catch {}
+    }
+    if (savedAllOrders) {
+      try {
+        setAllOrders(JSON.parse(savedAllOrders));
       } catch {}
     }
   }, []);
@@ -92,7 +115,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const addOrder = useCallback((order: OrderRecord) => {
     setOrders((prev) => [order, ...prev]);
+    setAllOrders((prev) => {
+      const updated = [order, ...prev];
+      localStorage.setItem(ALL_ORDERS_KEY, JSON.stringify(updated));
+      return updated;
+    });
   }, []);
+
+  const updateOrderStatus = useCallback((orderId: string, status: string) => {
+    setAllOrders((prev) => {
+      const updated = prev.map((o) => o.id === orderId ? { ...o, status } : o);
+      localStorage.setItem(ALL_ORDERS_KEY, JSON.stringify(updated));
+      return updated;
+    });
+    setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status } : o));
+  }, []);
+
+  const getOrders = useCallback((): OrderRecord[] => {
+    const saved = localStorage.getItem(ALL_ORDERS_KEY);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return allOrders;
+  }, [allOrders]);
 
   return (
     <AuthContext.Provider
@@ -104,6 +151,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         addOrder,
         isLoggedIn: !!customer,
+        allOrders,
+        updateOrderStatus,
+        getOrders,
       }}
     >
       {children}

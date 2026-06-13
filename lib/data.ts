@@ -28,6 +28,7 @@ export const initialProducts: Product[] = [
     weight: "2kg",
     servings: 60,
     createdAt: "2024-01-15",
+    deliveryCost: 0,
   },
   {
     id: "2",
@@ -46,6 +47,7 @@ export const initialProducts: Product[] = [
     weight: "300g",
     servings: 30,
     createdAt: "2024-02-10",
+    deliveryCost: 0,
   },
   {
     id: "3",
@@ -63,6 +65,7 @@ export const initialProducts: Product[] = [
     weight: "120 tablets",
     servings: 120,
     createdAt: "2024-01-20",
+    deliveryCost: 0,
   },
   {
     id: "4",
@@ -81,6 +84,7 @@ export const initialProducts: Product[] = [
     weight: "90 capsules",
     servings: 90,
     createdAt: "2024-03-05",
+    deliveryCost: 0,
   },
   {
     id: "5",
@@ -98,6 +102,7 @@ export const initialProducts: Product[] = [
     weight: "400g",
     servings: 40,
     createdAt: "2024-02-15",
+    deliveryCost: 0,
   },
   {
     id: "6",
@@ -116,6 +121,7 @@ export const initialProducts: Product[] = [
     weight: "500g",
     servings: 100,
     createdAt: "2024-01-08",
+    deliveryCost: 0,
   },
   {
     id: "7",
@@ -133,6 +139,7 @@ export const initialProducts: Product[] = [
     weight: "120 capsules",
     servings: 30,
     createdAt: "2024-03-12",
+    deliveryCost: 0,
   },
   {
     id: "8",
@@ -150,6 +157,7 @@ export const initialProducts: Product[] = [
     weight: "180 softgels",
     servings: 180,
     createdAt: "2024-02-28",
+    deliveryCost: 0,
   },
   {
     id: "9",
@@ -168,6 +176,7 @@ export const initialProducts: Product[] = [
     weight: "5kg",
     servings: 25,
     createdAt: "2024-03-20",
+    deliveryCost: 0,
   },
   {
     id: "10",
@@ -185,6 +194,7 @@ export const initialProducts: Product[] = [
     weight: "60 capsules",
     servings: 60,
     createdAt: "2024-04-01",
+    deliveryCost: 0,
   },
   {
     id: "11",
@@ -202,6 +212,7 @@ export const initialProducts: Product[] = [
     weight: "400g",
     servings: 40,
     createdAt: "2024-03-28",
+    deliveryCost: 0,
   },
   {
     id: "12",
@@ -220,6 +231,7 @@ export const initialProducts: Product[] = [
     weight: "120 capsules",
     servings: 30,
     createdAt: "2024-04-10",
+    deliveryCost: 0,
   },
 ];
 

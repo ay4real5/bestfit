@@ -14,6 +14,7 @@ export interface Product {
   weight?: string;
   servings?: number;
   createdAt: string;
+  deliveryCost: number;
 }
 
 export interface CartItem {
@@ -21,14 +22,25 @@ export interface CartItem {
   quantity: number;
 }
 
+export type DeliveryMethod = "pickup" | "delivery";
+export type PaymentMethod = "bank_transfer" | "card";
+export type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled" | "awaiting_payment" | "paid";
+
 export interface Order {
   id: string;
   items: CartItem[];
+  subtotal: number;
+  deliveryCost: number;
   total: number;
-  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  status: OrderStatus;
   customerEmail: string;
   customerName: string;
   address: string;
+  city: string;
+  phone: string;
+  deliveryMethod: DeliveryMethod;
+  paymentMethod: PaymentMethod;
+  proofOfPayment?: string; // base64 image
   createdAt: string;
 }
 
