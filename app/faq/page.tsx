@@ -65,7 +65,7 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h1>
 
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion className="w-full">
           {faqs.map((faq, i) => (
             <AccordionItem key={i} value={`item-${i}`}>
               <AccordionTrigger className="text-left">
