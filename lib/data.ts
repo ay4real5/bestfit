@@ -239,6 +239,25 @@ export const initialProducts: Product[] = [
     createdAt: "2024-04-05",
     deliveryCost: 0,
   },
+  {
+    id: "13",
+    name: "Myprotein Impact Creatine — Unflavoured",
+    slug: "myprotein-impact-creatine",
+    description:
+      "Myprotein Impact Creatine, Unflavoured. 3g pure creatine per serving to support strength, power output and performance. One of the most researched supplements in sports nutrition. Mixes easily into any shake or drink. Unflavoured for versatile use.",
+    price: 15000,
+    compareAtPrice: 19000,
+    image: "/products/myprotein-impact-creatine.jpg",
+    category: "Creatine",
+    tags: ["strength", "power", "creatine"],
+    inStock: true,
+    inventory: 45,
+    featured: false,
+    weight: "250g",
+    servings: 83,
+    createdAt: "2024-04-10",
+    deliveryCost: 0,
+  },
 ];
 
 let products: Product[] = [...initialProducts];
