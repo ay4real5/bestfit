@@ -9,12 +9,6 @@ import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
 import { Input } from "@/components/ui/input";
 import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -69,28 +63,29 @@ export default function ProductsContent() {
   }, [allProducts, category, search, sort]);
 
   return (
-    <div className="container mx-auto px-4 py-8 md:px-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">All Products</h1>
-        <p className="mt-1 text-muted-foreground">
+    <div className="container mx-auto px-4 py-12 md:px-6">
+      <div className="mb-10">
+        <span className="text-xs font-semibold uppercase tracking-widest text-primary">Shop</span>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">All Products</h1>
+        <p className="mt-3 text-stone-500">
           {filtered.length} supplement{filtered.length !== 1 ? "s" : ""} available
         </p>
       </div>
 
       {/* Filters */}
-      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative max-w-md flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
           <Input
             placeholder="Search supplements..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="rounded-full border-stone-200 pl-9 text-sm"
           />
         </div>
         <div className="flex gap-3">
           <Select value={category} onValueChange={(v) => setCategory(v ?? "")}>
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-[160px] rounded-full border-stone-200">
               <SlidersHorizontal className="mr-2 h-4 w-4" />
               <SelectValue placeholder="Category" />
             </SelectTrigger>
@@ -104,7 +99,7 @@ export default function ProductsContent() {
             </SelectContent>
           </Select>
           <Select value={sort} onValueChange={(v) => setSort(v ?? "featured")}>
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-[160px] rounded-full border-stone-200">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -117,7 +112,7 @@ export default function ProductsContent() {
           {category && (
             <button
               type="button"
-              className="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-slate-100 transition-colors"
+              className="inline-flex items-center rounded-full border border-stone-200 px-4 py-2 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-50"
               onClick={() => setCategory("")}
             >
               Clear
@@ -129,9 +124,11 @@ export default function ProductsContent() {
       {/* Grid */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Search className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold">No products found</h3>
-          <p className="text-muted-foreground">Try adjusting your search or filters.</p>
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-stone-100 mb-6">
+            <Search className="h-10 w-10 text-stone-300" />
+          </div>
+          <h3 className="text-lg font-semibold text-stone-900">No products found</h3>
+          <p className="mt-2 text-stone-500">Try adjusting your search or filters.</p>
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -163,81 +160,79 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
   };
 
   return (
-    <Card className="group h-full overflow-hidden transition-shadow hover:shadow-lg">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-stone-100 bg-white transition-all hover:border-stone-200 hover:shadow-xl hover:shadow-stone-200/40">
       <div className="relative">
         <Link href={`/products/${product.slug}`} className="block">
-          <div className="relative aspect-square overflow-hidden bg-slate-100">
+          <div className="relative aspect-square overflow-hidden bg-stone-100">
             <Image
               src={product.image}
               alt={product.name}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             {product.compareAtPrice && (
-              <Badge className="absolute left-2 top-2 bg-destructive text-white">
+              <span className="absolute left-3 top-3 rounded-full bg-red-500 px-2.5 py-1 text-xs font-semibold text-white">
                 Sale
-              </Badge>
+              </span>
             )}
             {!product.inStock && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <Badge variant="secondary" className="text-base">
+              <div className="absolute inset-0 flex items-center justify-center bg-stone-950/50 backdrop-blur-[2px]">
+                <span className="rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold text-stone-900">
                   Out of Stock
-                </Badge>
+                </span>
               </div>
             )}
             <button
               onClick={handleWishlist}
-              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-colors hover:bg-white pointer-events-auto"
+              className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-sm transition-all hover:bg-white hover:scale-105 pointer-events-auto"
             >
               <Heart
-                className={`h-4 w-4 ${inWishlist ? "fill-red-500 text-red-500" : "text-slate-600"}`}
+                className={`h-4 w-4 transition-colors ${inWishlist ? "fill-red-500 text-red-500" : "text-stone-500 hover:text-red-500"}`}
               />
             </button>
           </div>
         </Link>
         {product.inStock && (
-          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-4 opacity-0 transition-opacity group-hover:opacity-100 pointer-events-none">
+          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-5 opacity-0 transition-all duration-300 group-hover:opacity-100 pointer-events-none">
             <button
               type="button"
-              className="pointer-events-auto inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-white shadow-lg hover:bg-primary/90"
+              className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white shadow-lg transition-transform hover:scale-105 hover:bg-stone-800"
               onClick={handleQuickAdd}
             >
-              <ShoppingCart className="h-3.5 w-3.5" /> Quick Add
+              <ShoppingCart className="h-4 w-4" /> Quick Add
             </button>
           </div>
         )}
       </div>
-      <CardContent className="p-4">
+      <div className="flex flex-1 flex-col p-5">
         <Link href={`/products/${product.slug}`}>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
             {product.category}
           </p>
-          <h3 className="mt-1 font-semibold leading-tight group-hover:text-primary transition-colors">
+          <h3 className="mt-1.5 text-[15px] font-semibold leading-snug text-stone-800 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>
-      </CardContent>
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold">
-            ${product.price.toFixed(2)}
-          </span>
-          {product.compareAtPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              ${product.compareAtPrice.toFixed(2)}
-            </span>
+        <div className="mt-auto flex items-center justify-between pt-4">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg font-bold text-stone-900">${product.price.toFixed(2)}</span>
+            {product.compareAtPrice && (
+              <span className="text-sm text-stone-400 line-through">
+                ${product.compareAtPrice.toFixed(2)}
+              </span>
+            )}
+          </div>
+          {product.inStock && (
+            <button
+              type="button"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-stone-100 text-stone-600 transition-all hover:bg-primary hover:text-white"
+              onClick={handleQuickAdd}
+            >
+              <ShoppingCart className="h-4 w-4" />
+            </button>
           )}
         </div>
-        {product.inStock && (
-          <button
-            type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-slate-100 transition-colors"
-            onClick={handleQuickAdd}
-          >
-            <ShoppingCart className="h-4 w-4 text-slate-600" />
-          </button>
-        )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }

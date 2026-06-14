@@ -1,25 +1,38 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getProducts } from "@/lib/data";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Package, DollarSign, Tags, ArrowRight, LogOut, FolderOpen } from "lucide-react";
+  Package,
+  DollarSign,
+  Tags,
+  ArrowRight,
+  LogOut,
+  FolderOpen,
+  ShoppingBag,
+  TrendingUp,
+  AlertCircle,
+} from "lucide-react";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
   const products = getProducts();
+  const [ordersCount, setOrdersCount] = useState(0);
+  const [ordersRevenue, setOrdersRevenue] = useState(0);
 
   useEffect(() => {
     if (typeof window !== "undefined" && !localStorage.getItem("festfit_admin")) {
       router.push("/admin/login");
+    }
+    const raw = localStorage.getItem("festfit_orders");
+    if (raw) {
+      try {
+        const all = JSON.parse(raw);
+        setOrdersCount(all.length);
+        setOrdersRevenue(all.reduce((sum: number, o: any) => sum + (o.total || 0), 0));
+      } catch {}
     }
   }, [router]);
 
@@ -33,16 +46,75 @@ export default function AdminDashboardPage() {
     router.push("/admin/login");
   };
 
+  const stats = [
+    {
+      label: "Total Products",
+      value: totalProducts,
+      icon: Package,
+      color: "bg-blue-50 text-blue-600",
+    },
+    {
+      label: "Inventory Value",
+      value: `$${totalValue.toFixed(0)}`,
+      icon: DollarSign,
+      color: "bg-emerald-50 text-emerald-600",
+    },
+    {
+      label: "Categories",
+      value: categoriesCount,
+      icon: Tags,
+      color: "bg-violet-50 text-violet-600",
+    },
+    {
+      label: "Orders",
+      value: ordersCount,
+      icon: ShoppingBag,
+      color: "bg-amber-50 text-amber-600",
+    },
+  ];
+
+  const quickLinks = [
+    {
+      title: "Products",
+      desc: "Add, edit, or remove supplements from your catalog.",
+      href: "/admin/products",
+      icon: Package,
+      color: "bg-stone-900 text-white hover:bg-stone-800",
+    },
+    {
+      title: "Categories",
+      desc: "Manage product categories.",
+      href: "/admin/categories",
+      icon: FolderOpen,
+      color: "bg-white text-stone-900 border border-stone-200 hover:bg-stone-50",
+    },
+    {
+      title: "Orders",
+      desc: "View and manage customer orders with proof of payment.",
+      href: "/admin/orders",
+      icon: ShoppingBag,
+      color: "bg-white text-stone-900 border border-stone-200 hover:bg-stone-50",
+    },
+    {
+      title: "Storefront",
+      desc: "Preview how customers see your store.",
+      href: "/",
+      icon: TrendingUp,
+      color: "bg-white text-stone-900 border border-stone-200 hover:bg-stone-50",
+    },
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-8 md:px-6">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="container mx-auto px-4 py-10 md:px-6">
+      <div className="mb-10 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your supplement store</p>
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">Admin</span>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">Dashboard</h1>
+          <p className="mt-2 text-stone-500">Overview of your supplement store</p>
         </div>
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-slate-100 transition-colors"
+          className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-5 py-2.5 text-sm font-medium text-stone-600 transition-all hover:bg-stone-50 hover:text-stone-900"
           onClick={handleLogout}
         >
           <LogOut className="h-4 w-4" /> Logout
@@ -50,107 +122,68 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalProducts}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${totalValue.toFixed(0)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
-            <Tags className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{categoriesCount}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{outOfStock}</div>
-          </CardContent>
-        </Card>
+      <div className="mb-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-2xl border border-stone-100 bg-white p-6 transition-all hover:border-stone-200 hover:shadow-lg hover:shadow-stone-200/30"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-stone-500">{stat.label}</p>
+                <p className="mt-2 text-3xl font-bold text-stone-900">{stat.value}</p>
+              </div>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${stat.color}`}>
+                <stat.icon className="h-5 w-5" />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
+      {outOfStock > 0 && (
+        <div className="mb-10 flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm text-red-700">
+          <AlertCircle className="h-5 w-5 shrink-0" />
+          <span>
+            <span className="font-semibold">{outOfStock}</span> product{outOfStock > 1 ? "s are" : " is"} currently out of stock.{" "}
+            <Link href="/admin/products" className="underline hover:no-underline">Manage inventory</Link>
+          </span>
+        </div>
+      )}
+
+      {ordersRevenue > 0 && (
+        <div className="mb-10 rounded-2xl border border-stone-100 bg-white p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-stone-500">Total Revenue</p>
+              <p className="mt-1 text-3xl font-bold text-stone-900">${ordersRevenue.toFixed(2)}</p>
+            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <TrendingUp className="h-5 w-5" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Manage Products</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Add, edit, or remove supplements from your catalog.
-            </p>
-            <Link href="/admin/products">
-              <Button className="gap-2">
-                Go to Products <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Categories</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Manage product categories.
-            </p>
-            <Link href="/admin/categories">
-              <Button variant="secondary" className="gap-2">
-                <FolderOpen className="h-4 w-4" /> Manage
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              View and manage customer orders.
-            </p>
-            <Link href="/admin/orders">
-              <Button variant="secondary" className="gap-2">
-                View Orders <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Storefront</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Preview how customers see your store.
-            </p>
-            <Link href="/">
-              <Button variant="outline" className="gap-2">
-                View Store <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+      <h2 className="mb-5 text-lg font-semibold text-stone-900">Quick Actions</h2>
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {quickLinks.map((link) => (
+          <Link
+            key={link.title}
+            href={link.href}
+            className="group rounded-2xl border border-stone-100 bg-white p-6 transition-all hover:border-stone-200 hover:shadow-lg hover:shadow-stone-200/30"
+          >
+            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-stone-100 text-stone-600 transition-colors group-hover:bg-primary group-hover:text-white">
+              <link.icon className="h-5 w-5" />
+            </div>
+            <h3 className="text-[15px] font-semibold text-stone-900">{link.title}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-stone-500">{link.desc}</p>
+            <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+              Go to {link.title} <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

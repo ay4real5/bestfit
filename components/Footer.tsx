@@ -2,36 +2,43 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Globe, MessageCircle, AtSign, Mail, Phone, MapPin } from "lucide-react";
+import { Globe, MessageCircle, AtSign, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-slate-50">
+    <footer className="border-t border-stone-200 bg-white">
       {/* Newsletter */}
-      <div className="border-b bg-slate-100">
-        <div className="container mx-auto px-4 py-8 md:px-6">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div>
-              <h3 className="text-lg font-semibold">Subscribe to our newsletter</h3>
-              <p className="text-sm text-muted-foreground">
-                Get the latest deals and fitness tips delivered to your inbox.
+      <div className="border-b border-stone-100 bg-stone-50">
+        <div className="container mx-auto px-4 py-14 md:px-6">
+          <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+            <div className="max-w-md">
+              <h3 className="text-2xl font-semibold tracking-tight text-stone-900">Stay in the loop</h3>
+              <p className="mt-2 text-stone-500">
+                Get the latest deals, new arrivals, and fitness tips delivered to your inbox.
               </p>
             </div>
-            <form className="flex w-full max-w-sm gap-2" onSubmit={(e) => e.preventDefault()}>
-              <Input type="email" placeholder="your@email.com" />
-              <Button type="submit">Subscribe</Button>
+            <form className="flex w-full max-w-md gap-3" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                className="flex-1 rounded-full border border-stone-200 bg-white px-5 py-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-stone-800 hover:shadow-lg"
+              >
+                Subscribe <ArrowRight className="h-4 w-4" />
+              </button>
             </form>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12 md:px-6">
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 py-16 md:px-6">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
-          <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2">
+          <div className="lg:col-span-2 space-y-5">
+            <Link href="/" className="flex items-center gap-2.5">
               <div className="relative h-10 w-10">
                 <Image
                   src="/WhatsApp Image 2026-06-13 at 11.08.23.jpeg"
@@ -40,69 +47,86 @@ export default function Footer() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl font-bold">Fest Fit</span>
+              <span className="text-xl font-bold tracking-tight text-stone-900">Fest Fit</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
-              Premium supplements to fuel your fitness journey. Quality ingredients,
-              real results.
+            <p className="max-w-sm text-[15px] leading-relaxed text-stone-500">
+              Premium supplements crafted to fuel your fitness journey. Quality ingredients, rigorous testing, real results.
             </p>
             <div className="flex gap-3">
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Globe className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <MessageCircle className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <AtSign className="h-5 w-5" />
-              </Link>
+              {[Globe, MessageCircle, AtSign].map((Icon, i) => (
+                <Link
+                  key={i}
+                  href="#"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 text-stone-400 transition-all hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                >
+                  <Icon className="h-[18px] w-[18px]" />
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Shop */}
           <div>
-            <h3 className="font-semibold mb-3">Quick Links</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
-              <li><Link href="/products" className="hover:text-primary transition-colors">Shop All</Link></li>
-              <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
-              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+            <h4 className="mb-5 text-sm font-semibold uppercase tracking-wider text-stone-900">Shop</h4>
+            <ul className="space-y-3">
+              {["All Products", "Protein", "Pre-Workout", "Vitamins", "Weight Loss"].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={item === "All Products" ? "/products" : `/products?category=${encodeURIComponent(item)}`}
+                    className="text-[15px] text-stone-500 transition-colors hover:text-stone-900"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* Support */}
           <div>
-            <h3 className="font-semibold mb-3">Categories</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/products?category=Protein" className="hover:text-primary transition-colors">Protein</Link></li>
-              <li><Link href="/products?category=Pre-Workout" className="hover:text-primary transition-colors">Pre-Workout</Link></li>
-              <li><Link href="/products?category=Vitamins" className="hover:text-primary transition-colors">Vitamins</Link></li>
-              <li><Link href="/products?category=Weight+Loss" className="hover:text-primary transition-colors">Weight Loss</Link></li>
+            <h4 className="mb-5 text-sm font-semibold uppercase tracking-wider text-stone-900">Support</h4>
+            <ul className="space-y-3">
+              {["FAQ", "Contact", "Shipping", "Returns"].map((item) => (
+                <li key={item}>
+                  <Link
+                    href={item === "Contact" ? "/contact" : item === "FAQ" ? "/faq" : "#"}
+                    className="text-[15px] text-stone-500 transition-colors hover:text-stone-900"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="font-semibold mb-3">Contact</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-primary" />
-                support@festfit.com
+            <h4 className="mb-5 text-sm font-semibold uppercase tracking-wider text-stone-900">Contact</h4>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <Mail className="mt-0.5 h-4 w-4 text-primary" />
+                <span className="text-[15px] text-stone-500">support@festfit.com</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-primary" />
-                +1 (555) 123-4567
+              <li className="flex items-start gap-3">
+                <Phone className="mt-0.5 h-4 w-4 text-primary" />
+                <span className="text-[15px] text-stone-500">+234 812 345 6789</span>
               </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" />
-                Lagos, Nigeria
+              <li className="flex items-start gap-3">
+                <MapPin className="mt-0.5 h-4 w-4 text-primary" />
+                <span className="text-[15px] text-stone-500">Lagos, Nigeria</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 border-t pt-6 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Fest Fit Supplements. All rights reserved.
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-stone-100 pt-8 md:flex-row">
+          <p className="text-sm text-stone-400">
+            &copy; {new Date().getFullYear()} Fest Fit Supplements. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm text-stone-400">
+            <Link href="#" className="hover:text-stone-600 transition-colors">Privacy Policy</Link>
+            <Link href="#" className="hover:text-stone-600 transition-colors">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>
