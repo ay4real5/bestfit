@@ -1,12 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Phone, MapPin, Send, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 
 export default function ContactPage() {
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    setSending(true);
+    setTimeout(() => {
+      setSending(false);
+      setForm({ name: "", email: "", subject: "", message: "" });
+      toast.success("Message sent! We'll get back to you within 24 hours.");
+    }, 800);
+  };
+
   return (
     <div className="container mx-auto px-4 py-12 md:px-6">
       <Link
@@ -26,35 +45,38 @@ export default function ContactPage() {
         <div className="lg:col-span-2">
           <div className="rounded-2xl border border-stone-100 bg-white p-6">
             <h3 className="text-lg font-semibold text-stone-900">Send a Message</h3>
-            <form className="mt-5 space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm font-medium text-stone-700">Name</Label>
-                  <Input id="name" placeholder="Your name" className="rounded-xl border-stone-200" />
+                  <Label htmlFor="name" className="text-sm font-medium text-stone-700">Name <span className="text-red-400">*</span></Label>
+                  <Input id="name" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-xl border-stone-200" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-stone-700">Email</Label>
-                  <Input id="email" type="email" placeholder="your@email.com" className="rounded-xl border-stone-200" />
+                  <Label htmlFor="email" className="text-sm font-medium text-stone-700">Email <span className="text-red-400">*</span></Label>
+                  <Input id="email" type="email" placeholder="your@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="rounded-xl border-stone-200" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject" className="text-sm font-medium text-stone-700">Subject</Label>
-                <Input id="subject" placeholder="How can we help?" className="rounded-xl border-stone-200" />
+                <Input id="subject" placeholder="How can we help?" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className="rounded-xl border-stone-200" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message" className="text-sm font-medium text-stone-700">Message</Label>
+                <Label htmlFor="message" className="text-sm font-medium text-stone-700">Message <span className="text-red-400">*</span></Label>
                 <Textarea
                   id="message"
                   rows={5}
                   placeholder="Tell us more about your inquiry..."
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
                   className="rounded-xl border-stone-200"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40"
+                disabled={sending}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40 disabled:opacity-60"
               >
-                <Send className="h-4 w-4" /> Send Message
+                <Send className="h-4 w-4" /> {sending ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>

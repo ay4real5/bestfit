@@ -1,10 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Globe, MessageCircle, AtSign, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleNewsletter = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setEmail("");
+    toast.success("You're subscribed! Welcome to the Fest Fit community.");
+  };
+
   return (
     <footer className="border-t border-stone-200 bg-white">
       {/* Newsletter */}
@@ -17,10 +28,13 @@ export default function Footer() {
                 Get the latest deals, new arrivals, and fitness tips delivered to your inbox.
               </p>
             </div>
-            <form className="flex w-full max-w-md gap-3" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex w-full max-w-md gap-3" onSubmit={handleNewsletter}>
               <input
                 type="email"
                 placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="flex-1 rounded-full border border-stone-200 bg-white px-5 py-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
               />
               <button
@@ -86,13 +100,18 @@ export default function Footer() {
           <div>
             <h4 className="mb-5 text-sm font-semibold uppercase tracking-wider text-stone-900">Support</h4>
             <ul className="space-y-3">
-              {["FAQ", "Contact", "Shipping", "Returns"].map((item) => (
-                <li key={item}>
+              {[
+                { label: "FAQ", href: "/faq" },
+                { label: "Contact Us", href: "/contact" },
+                { label: "My Account", href: "/account" },
+                { label: "Track Order", href: "/account" },
+              ].map((item) => (
+                <li key={item.label}>
                   <Link
-                    href={item === "Contact" ? "/contact" : item === "FAQ" ? "/faq" : "#"}
+                    href={item.href}
                     className="text-[15px] text-stone-500 transition-colors hover:text-stone-900"
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </li>
               ))}

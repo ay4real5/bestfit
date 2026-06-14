@@ -31,6 +31,7 @@ export default function ProductDetailPage() {
   const { toggleWishlist, isInWishlist } = useWishlist();
   const inWishlist = product ? isInWishlist(product.id) : false;
   const [quantity, setQuantity] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
 
   if (!product) {
     return (
@@ -232,7 +233,10 @@ export default function ProductDetailPage() {
               <button
                 key={tab}
                 type="button"
-                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${i === 0 ? "border-primary text-stone-900" : "border-transparent text-stone-500 hover:text-stone-700"}`}
+                onClick={() => setActiveTab(i)}
+                className={`border-b-2 pb-3 text-sm font-medium transition-colors ${
+                  activeTab === i ? "border-primary text-stone-900" : "border-transparent text-stone-500 hover:text-stone-700"
+                }`}
               >
                 {tab}
               </button>
@@ -241,20 +245,75 @@ export default function ProductDetailPage() {
         </div>
 
         <div className="pt-8">
-          <div className="max-w-2xl">
-            <p className="leading-relaxed text-stone-600">
-              {product.description}
-            </p>
-            <div className="mt-8 space-y-3">
-              <h4 className="text-lg font-semibold text-stone-900">Highlights</h4>
-              <ul className="list-disc list-inside text-[15px] text-stone-500 space-y-2">
-                <li>Premium quality ingredients sourced from certified facilities</li>
-                <li>Third-party lab tested for purity and potency</li>
-                <li>Fast-absorbing formula for optimal results</li>
-                <li>No artificial fillers or banned substances</li>
-              </ul>
+          {activeTab === 0 && (
+            <div className="max-w-2xl">
+              <p className="leading-relaxed text-stone-600">{product.description}</p>
+              <div className="mt-8 space-y-3">
+                <h4 className="text-lg font-semibold text-stone-900">Highlights</h4>
+                <ul className="list-disc list-inside text-[15px] text-stone-500 space-y-2">
+                  <li>Premium quality ingredients sourced from certified facilities</li>
+                  <li>Third-party lab tested for purity and potency</li>
+                  <li>Fast-absorbing formula for optimal results</li>
+                  <li>No artificial fillers or banned substances</li>
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
+
+          {activeTab === 1 && (
+            <div className="max-w-md">
+              <h4 className="text-lg font-semibold text-stone-900 mb-4">Nutrition Facts</h4>
+              <div className="rounded-2xl border border-stone-200 overflow-hidden">
+                <div className="bg-stone-900 px-5 py-3">
+                  <p className="text-white font-bold text-lg">Serving Size</p>
+                  <p className="text-stone-300 text-sm">{product.weight ? `1 serving of ${product.weight}` : "1 serving"}</p>
+                </div>
+                {[
+                  { label: "Servings per container", value: product.servings ? `${product.servings}` : "–" },
+                  { label: "Calories", value: "–" },
+                  { label: "Protein", value: product.category === "Protein" ? "25g" : "–" },
+                  { label: "Carbohydrates", value: "–" },
+                  { label: "Fat", value: "–" },
+                ].map((row, i) => (
+                  <div key={row.label} className={`flex justify-between px-5 py-3 text-sm ${i % 2 === 0 ? "bg-white" : "bg-stone-50"}`}>
+                    <span className="text-stone-600">{row.label}</span>
+                    <span className="font-semibold text-stone-900">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-stone-400">* Full nutritional details are printed on the product packaging.</p>
+            </div>
+          )}
+
+          {activeTab === 2 && (
+            <div className="max-w-2xl space-y-6">
+              {reviews.length === 0 ? (
+                <div className="py-12 text-center">
+                  <p className="text-stone-400">No reviews yet. Be the first to review this product!</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-5xl font-bold text-stone-900">{avgRating.toFixed(1)}</span>
+                    <div>
+                      <StarRating rating={Math.round(avgRating)} />
+                      <p className="mt-1 text-sm text-stone-500">{reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
+                    </div>
+                  </div>
+                  {reviews.map((review) => (
+                    <div key={review.id} className="rounded-2xl border border-stone-100 bg-white p-5">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold text-stone-900">{review.name}</p>
+                        <p className="text-xs text-stone-400">{new Date(review.date).toLocaleDateString()}</p>
+                      </div>
+                      <StarRating rating={review.rating} />
+                      <p className="mt-3 text-[15px] leading-relaxed text-stone-600">{review.comment}</p>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
         </div>
       </section>
     </div>

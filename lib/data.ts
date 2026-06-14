@@ -341,7 +341,7 @@ export function getReviewsByProduct(productId: string): Review[] {
 
 export const promoCodes: PromoCode[] = [
   { code: "FEST10", discount: 10, type: "percent" },
-  { code: "WELCOME", discount: 5, type: "fixed" },
+  { code: "WELCOME", discount: 2000, type: "fixed" },
 ];
 
 export function getPromoCode(code: string): PromoCode | undefined {

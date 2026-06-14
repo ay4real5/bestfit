@@ -206,7 +206,7 @@ export default function CartPage() {
                     <Tag className="h-3.5 w-3.5" /> Apply
                   </button>
                 </div>
-                <p className="text-xs text-stone-400">Try FEST10 for 10% off</p>
+                <p className="text-xs text-stone-400">Try <strong>FEST10</strong> for 10% off or <strong>WELCOME</strong> for ₦2,000 off</p>
               </div>
             ) : (
               <div className="mt-6 flex items-center justify-between rounded-xl bg-primary/5 px-4 py-3">

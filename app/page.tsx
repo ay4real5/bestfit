@@ -202,16 +202,17 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
             </button>
           </div>
         </Link>
-        {/* Quick Add overlay on hover */}
-        <div className="absolute inset-x-0 bottom-0 flex justify-center pb-5 opacity-0 transition-all duration-300 group-hover:opacity-100 pointer-events-none">
-          <button
-            type="button"
-            className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white shadow-lg transition-transform hover:scale-105 hover:bg-stone-800"
-            onClick={handleQuickAdd}
-          >
-            <ShoppingCart className="h-4 w-4" /> Quick Add
-          </button>
-        </div>
+        {product.inStock && (
+          <div className="absolute inset-x-0 bottom-0 flex justify-center pb-5 opacity-0 transition-all duration-300 group-hover:opacity-100 pointer-events-none">
+            <button
+              type="button"
+              className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-stone-900 px-5 py-2.5 text-sm font-medium text-white shadow-lg transition-transform hover:scale-105 hover:bg-stone-800"
+              onClick={handleQuickAdd}
+            >
+              <ShoppingCart className="h-4 w-4" /> Quick Add
+            </button>
+          </div>
+        )}
       </div>
       <div className="flex flex-1 flex-col p-5">
         <Link href={`/products/${product.slug}`}>
