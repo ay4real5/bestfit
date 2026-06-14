@@ -11,7 +11,6 @@ import {
   categories,
 } from "@/lib/data";
 import { Product } from "@/lib/types";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,7 +36,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2, Search, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -124,20 +122,20 @@ export default function AdminProductsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:px-6">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <button
             onClick={() => router.push("/admin/dashboard")}
-            className="mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+            className="mb-2 inline-flex items-center gap-1 text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> Back to dashboard
           </button>
-          <h1 className="text-3xl font-bold tracking-tight">Products</h1>
-          <p className="text-muted-foreground">Manage your supplement catalog</p>
+          <h1 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">Products</h1>
+          <p className="mt-2 text-stone-500">Manage your supplement catalog</p>
         </div>
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90"
           onClick={openNew}
         >
           <Plus className="h-4 w-4" /> Add Product
@@ -145,34 +143,34 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="mb-6 relative max-w-md">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
         <Input
           placeholder="Search products..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
+          className="rounded-xl border-stone-200 pl-9"
         />
       </div>
 
-      <div className="rounded-lg border bg-white">
+      <div className="rounded-2xl border border-stone-100 bg-white overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Delivery</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Featured</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+            <TableRow className="bg-stone-50 hover:bg-stone-50">
+              <TableHead className="text-stone-700">Product</TableHead>
+              <TableHead className="text-stone-700">Category</TableHead>
+              <TableHead className="text-stone-700">Price</TableHead>
+              <TableHead className="text-stone-700">Delivery</TableHead>
+              <TableHead className="text-stone-700">Stock</TableHead>
+              <TableHead className="text-stone-700">Featured</TableHead>
+              <TableHead className="text-right text-stone-700">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.map((product) => (
-              <TableRow key={product.id}>
+              <TableRow key={product.id} className="hover:bg-stone-50/50">
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="relative h-10 w-10 overflow-hidden rounded-md bg-slate-100">
+                    <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-stone-100">
                       <Image
                         src={product.image || "https://picsum.photos/seed/festfitadmin/40/40"}
                         alt={product.name}
@@ -180,50 +178,49 @@ export default function AdminProductsPage() {
                         className="object-cover"
                       />
                     </div>
-                    <span className="font-medium">{product.name}</span>
+                    <span className="font-medium text-stone-900">{product.name}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{product.category}</Badge>
+                  <span className="inline-flex items-center rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">{product.category}</span>
                 </TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
-                <TableCell>${product.deliveryCost?.toFixed(2) || "0.00"}</TableCell>
+                <TableCell className="font-medium text-stone-900">${product.price.toFixed(2)}</TableCell>
+                <TableCell className="text-stone-600">${product.deliveryCost?.toFixed(2) || "0.00"}</TableCell>
                 <TableCell>
-                  <span className={product.inStock ? "text-green-600" : "text-red-600"}>
+                  <span className={product.inStock ? "text-emerald-600 font-medium" : "text-red-500 font-medium"}>
                     {product.inventory}
                   </span>
                 </TableCell>
                 <TableCell>
                   {product.featured ? (
-                    <Badge className="bg-primary text-white">Yes</Badge>
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">Yes</span>
                   ) : (
-                    <span className="text-muted-foreground">No</span>
+                    <span className="text-stone-400">No</span>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700"
                       onClick={() => openEdit(product)}
                     >
                       <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive hover:text-destructive"
+                    </button>
+                    <button
+                      type="button"
+                      className="flex h-8 w-8 items-center justify-center rounded-full text-red-400 transition-colors hover:bg-red-50 hover:text-red-600"
                       onClick={() => handleDelete(product.id)}
                     >
                       <Trash2 className="h-4 w-4" />
-                    </Button>
+                    </button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-8 text-stone-400">
                   No products found.
                 </TableCell>
               </TableRow>
@@ -422,14 +419,14 @@ export default function AdminProductsPage() {
           <div className="flex justify-end gap-3">
             <button
               type="button"
-              className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium hover:bg-slate-100 transition-colors"
+              className="inline-flex items-center rounded-full border border-stone-200 px-5 py-2.5 text-sm font-medium text-stone-600 transition-all hover:bg-stone-50"
               onClick={() => setDialogOpen(false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90"
               onClick={handleSave}
             >
               {editing ? "Save Changes" : "Add Product"}

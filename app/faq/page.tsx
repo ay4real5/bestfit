@@ -52,26 +52,32 @@ const faqs = [
 
 export default function FAQPage() {
   return (
-    <div className="container mx-auto px-4 py-8 md:px-6">
+    <div className="container mx-auto px-4 py-12 md:px-6">
       <Link
         href="/"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
+        className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Back to home
       </Link>
 
       <div className="mx-auto max-w-2xl">
-        <h1 className="mb-8 text-3xl font-bold tracking-tight text-center">
-          Frequently Asked Questions
-        </h1>
+        <div className="mb-10 text-center">
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">Support</span>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">
+            Frequently Asked Questions
+          </h1>
+          <p className="mt-3 text-stone-500">Everything you need to know about our supplements.</p>
+        </div>
 
         <Accordion className="w-full">
           {faqs.map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger className="text-left">
+            <AccordionItem key={i} value={`item-${i}`} className="border-b border-stone-100">
+              <AccordionTrigger className="text-left text-[15px] font-medium text-stone-800 hover:no-underline py-5">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent>{faq.answer}</AccordionContent>
+              <AccordionContent className="text-stone-500 leading-relaxed pb-5">
+                {faq.answer}
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

@@ -12,7 +12,6 @@ import {
   Heart,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
 import { useWishlist } from "./WishlistProvider";
 import { useAuth } from "./AuthProvider";
 
