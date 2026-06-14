@@ -14,9 +14,9 @@ const faqs = [
       "Whey protein isolate and creatine monohydrate are the most researched supplements for muscle growth. Our Whey Protein Isolate provides 25g of protein per serving, while Creatine Monohydrate increases strength and power output during training.",
   },
   {
-    question: "How long does shipping take?",
+    question: "How long does delivery take?",
     answer:
-      "Orders are processed within 1-2 business days. Standard shipping takes 2-3 business days. Orders over $50 qualify for free shipping.",
+      "Orders are processed within 1-2 business days. Standard delivery takes 2-3 business days within Lagos and 3-5 business days to other states. Orders over ₦50,000 qualify for free delivery.",
   },
   {
     question: "Are your supplements lab tested?",
@@ -41,12 +41,12 @@ const faqs = [
   {
     question: "How do I track my order?",
     answer:
-      "Once your order ships, you will receive an email with a tracking number. You can use this number on our carrier's website to track your delivery.",
+      "Once your order is confirmed and dispatched, our team will contact you via phone or WhatsApp with delivery updates. You can also log in to your account to check your order status at any time.",
   },
   {
     question: "Are your products vegan friendly?",
     answer:
-      "Some of our products are vegan. Our BCAA Recovery and some vitamins are plant-based. Check individual product descriptions for vegan status.",
+      "Some of our products are vegan-friendly. Our BCAA Recovery and selected vitamins are plant-based. Check individual product pages for full ingredient details and vegan status.",
   },
 ];
 

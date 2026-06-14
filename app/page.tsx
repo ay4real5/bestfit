@@ -5,13 +5,6 @@ import Image from "next/image";
 import { getFeaturedProducts, getProducts, categories } from "@/lib/data";
 import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Star, Truck, ShieldCheck, Clock, ShoppingCart, Heart } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
@@ -74,7 +67,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
+              { icon: Truck, title: "Free Delivery", desc: "On orders over ₦50,000" },
               { icon: ShieldCheck, title: "Lab Tested", desc: "Quality guaranteed" },
               { icon: Star, title: "Top Rated", desc: "4.9/5 customer reviews" },
               { icon: Clock, title: "Fast Delivery", desc: "2-3 business days" },
@@ -148,13 +141,12 @@ export default function Home() {
       </section>
 
       {/* New Arrivals */}
-      <section className="py-16 bg-slate-50">
+      <section className="py-20 bg-stone-50">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-10">
-            <h2 className="text-3xl font-bold tracking-tight">New Arrivals</h2>
-            <p className="mt-2 text-muted-foreground">
-              Latest additions to our catalog
-            </p>
+          <div className="mb-12">
+            <span className="mb-3 inline-block text-xs font-semibold uppercase tracking-widest text-primary">New</span>
+            <h2 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">New Arrivals</h2>
+            <p className="mt-3 text-stone-500">The latest additions to our supplement range</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {latest.map((product) => (
@@ -173,7 +165,6 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
   const inWishlist = isInWishlist(product.id);
 
   const handleQuickAdd = () => {
-    console.log("Adding to cart:", product.name);
     addToCart(product, 1);
     toast.success(`${product.name} added to cart`);
   };
