@@ -29,7 +29,7 @@ export default function Home() {
       <section className="relative overflow-hidden bg-stone-950 py-24 md:py-36">
         <div className="absolute inset-0">
           <Image
-            src="https://picsum.photos/seed/festfithero/1600/900"
+            src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1600&h=900&fit=crop"
             alt="Gym background"
             fill
             className="object-cover opacity-30"
@@ -112,9 +112,6 @@ export default function Home() {
                     <h3 className="text-lg font-semibold text-stone-800 group-hover:text-primary transition-colors">
                       {cat}
                     </h3>
-                    <p className="mt-1 text-sm text-stone-500">
-                      {allProducts.filter((p) => p.category === cat).length} products
-                    </p>
                   </div>
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-stone-100 text-stone-400 transition-all group-hover:bg-primary group-hover:text-white">
                     <ArrowRight className="h-4 w-4" />
