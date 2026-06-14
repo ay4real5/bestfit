@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2, Search, ArrowLeft } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
 export default function AdminProductsPage() {
@@ -184,8 +185,8 @@ export default function AdminProductsPage() {
                 <TableCell>
                   <span className="inline-flex items-center rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">{product.category}</span>
                 </TableCell>
-                <TableCell className="font-medium text-stone-900">${product.price.toFixed(2)}</TableCell>
-                <TableCell className="text-stone-600">${product.deliveryCost?.toFixed(2) || "0.00"}</TableCell>
+                <TableCell className="font-medium text-stone-900">{formatPrice(product.price)}</TableCell>
+                <TableCell className="text-stone-600">{formatPrice(product.deliveryCost ?? 0)}</TableCell>
                 <TableCell>
                   <span className={product.inStock ? "text-emerald-600 font-medium" : "text-red-500 font-medium"}>
                     {product.inventory}

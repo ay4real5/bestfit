@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowLeft, Package, Eye, CreditCard, Building2 } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
 interface OrderItem {
@@ -106,7 +107,7 @@ export default function AdminOrdersPage() {
       <div className="mb-8 grid gap-5 sm:grid-cols-4">
         {[
           { label: "Total Orders", value: orders.length, icon: Package, color: "bg-blue-50 text-blue-600" },
-          { label: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: () => <span className="text-lg font-bold text-stone-400">$</span>, color: "bg-emerald-50 text-emerald-600" },
+          { label: "Total Revenue", value: formatPrice(totalRevenue), icon: () => <span className="text-lg font-bold text-stone-400">₦</span>, color: "bg-emerald-50 text-emerald-600" },
           { label: "Awaiting Payment", value: orders.filter((o) => o.status === "awaiting_payment").length, icon: Building2, color: "bg-amber-50 text-amber-600" },
           { label: "Pending", value: orders.filter((o) => o.status === "pending").length, icon: Package, color: "bg-violet-50 text-violet-600" },
         ].map((stat) => (
@@ -162,13 +163,13 @@ export default function AdminOrdersPage() {
                 {selectedOrder.items.map((item, i) => (
                   <div key={i} className="flex justify-between py-1 text-sm text-stone-600">
                     <span>{item.quantity}x {item.name}</span>
-                    <span className="font-medium text-stone-900">${(item.price * item.quantity).toFixed(2)}</span>
+                    <span className="font-medium text-stone-900">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
                 <div className="mt-3 border-t border-stone-100 pt-3 text-sm space-y-1">
-                  <div className="flex justify-between text-stone-500"><span>Subtotal</span><span className="font-medium text-stone-700">${selectedOrder.subtotal.toFixed(2)}</span></div>
-                  <div className="flex justify-between text-stone-500"><span>Delivery</span><span className="font-medium text-stone-700">${selectedOrder.deliveryCost.toFixed(2)}</span></div>
-                  <div className="flex justify-between font-bold text-stone-900"><span>Total</span><span>${selectedOrder.total.toFixed(2)}</span></div>
+                  <div className="flex justify-between text-stone-500"><span>Subtotal</span><span className="font-medium text-stone-700">{formatPrice(selectedOrder.subtotal)}</span></div>
+                  <div className="flex justify-between text-stone-500"><span>Delivery</span><span className="font-medium text-stone-700">{formatPrice(selectedOrder.deliveryCost)}</span></div>
+                  <div className="flex justify-between font-bold text-stone-900"><span>Total</span><span>{formatPrice(selectedOrder.total)}</span></div>
                 </div>
               </div>
 
@@ -224,7 +225,7 @@ export default function AdminOrdersPage() {
                   </div>
                 </TableCell>
                 <TableCell className="text-stone-600">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
-                <TableCell className="font-medium text-stone-900">${order.total.toFixed(2)}</TableCell>
+                <TableCell className="font-medium text-stone-900">{formatPrice(order.total)}</TableCell>
                 <TableCell>
                   <span className="inline-flex items-center gap-1 text-xs text-stone-600 capitalize">
                     {order.paymentMethod === "bank_transfer" ? <Building2 className="h-3 w-3" /> : <CreditCard className="h-3 w-3" />}

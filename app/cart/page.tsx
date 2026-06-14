@@ -19,13 +19,14 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
+import { formatPrice } from "@/lib/currency";
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, subtotal, clearCart } = useCart();
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number } | null>(null);
 
-  const shipping = subtotal >= 50 ? 0 : 5.99;
+  const shipping = subtotal >= 50000 ? 0 : 3000;
   const discount = promoApplied ? promoApplied.discount : 0;
   const total = Math.max(0, subtotal + shipping - discount);
 
@@ -117,7 +118,7 @@ export default function CartPage() {
                     </button>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-lg font-bold text-stone-900">${(product.price * quantity).toFixed(2)}</span>
+                    <span className="text-lg font-bold text-stone-900">{formatPrice(product.price * quantity)}</span>
                     <button
                       type="button"
                       className="flex h-9 w-9 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-red-50 hover:text-red-500"
@@ -156,7 +157,7 @@ export default function CartPage() {
             <div className="space-y-4">
               <div className="flex justify-between text-[15px]">
                 <span className="text-stone-500">Subtotal</span>
-                <span className="font-medium text-stone-900">${subtotal.toFixed(2)}</span>
+                <span className="font-medium text-stone-900">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-[15px]">
                 <span className="text-stone-500">Shipping</span>
@@ -164,25 +165,25 @@ export default function CartPage() {
                   {shipping === 0 ? (
                     <span className="text-primary">Free</span>
                   ) : (
-                    `$${shipping.toFixed(2)}`
+                    formatPrice(shipping)
                   )}
                 </span>
               </div>
               {shipping > 0 && (
                 <p className="text-xs text-stone-400">
-                  Add ${(50 - subtotal).toFixed(2)} more for free shipping!
+                  Add {formatPrice(50000 - subtotal)} more for free shipping!
                 </p>
               )}
               {promoApplied && (
                 <div className="flex justify-between text-[15px] text-primary">
                   <span>Discount ({promoApplied.code})</span>
-                  <span className="font-medium">-${promoApplied.discount.toFixed(2)}</span>
+                  <span className="font-medium">-{formatPrice(promoApplied.discount)}</span>
                 </div>
               )}
               <div className="my-4 h-px bg-stone-100" />
               <div className="flex justify-between text-lg font-bold text-stone-900">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{formatPrice(total)}</span>
               </div>
             </div>
 

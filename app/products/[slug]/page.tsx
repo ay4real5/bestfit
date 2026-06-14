@@ -21,6 +21,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { formatPrice } from "@/lib/currency";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -115,11 +116,11 @@ export default function ProductDetailPage() {
 
           <div className="mb-6 flex items-baseline gap-3">
             <span className="text-3xl font-bold text-stone-900">
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
               <span className="text-xl text-stone-400 line-through">
-                ${product.compareAtPrice.toFixed(2)}
+                {formatPrice(product.compareAtPrice)}
               </span>
             )}
           </div>
@@ -139,7 +140,7 @@ export default function ProductDetailPage() {
             )}
             <div className="flex items-center gap-2 text-stone-500">
               <Truck className="h-4 w-4 text-primary" />
-              Free shipping over $50
+              Free shipping over ₦50,000
             </div>
             <div className="flex items-center gap-2 text-stone-500">
               <RotateCcw className="h-4 w-4 text-primary" />
@@ -178,7 +179,7 @@ export default function ProductDetailPage() {
                 onClick={handleAddToCart}
               >
                 <ShoppingCart className="h-5 w-5" />
-                Add to Cart — ${(product.price * quantity).toFixed(2)}
+                Add to Cart — {formatPrice(product.price * quantity)}
               </button>
             </>
           ) : (
@@ -214,7 +215,7 @@ export default function ProductDetailPage() {
                     <h3 className="mt-1.5 text-[15px] font-semibold text-stone-800 group-hover:text-primary transition-colors">
                       {p.name}
                     </h3>
-                    <p className="mt-1 text-lg font-bold text-stone-900">${p.price.toFixed(2)}</p>
+                    <p className="mt-1 text-lg font-bold text-stone-900">{formatPrice(p.price)}</p>
                   </div>
                 </div>
               </Link>

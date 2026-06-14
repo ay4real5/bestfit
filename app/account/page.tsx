@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { Package, User, MapPin, Phone, LogOut, ArrowLeft, Truck, CreditCard, Building2 } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
 export default function AccountPage() {
@@ -128,7 +129,7 @@ export default function AccountPage() {
                         {order.items.map((item, i) => (
                           <div key={i} className="flex justify-between text-stone-500">
                             <span>{item.name} <span className="text-stone-400">x{item.quantity}</span></span>
-                            <span className="font-medium text-stone-700">${(item.price * item.quantity).toFixed(2)}</span>
+                            <span className="font-medium text-stone-700">{formatPrice(item.price * item.quantity)}</span>
                           </div>
                         ))}
                       </div>
@@ -136,15 +137,15 @@ export default function AccountPage() {
                       <div className="space-y-1.5 text-sm">
                         <div className="flex justify-between text-stone-500">
                           <span>Subtotal</span>
-                          <span className="font-medium text-stone-700">${order.subtotal?.toFixed(2) || order.total.toFixed(2)}</span>
+                          <span className="font-medium text-stone-700">{formatPrice(order.subtotal ?? order.total)}</span>
                         </div>
                         <div className="flex justify-between text-stone-500">
                           <span>Delivery</span>
-                          <span className="font-medium text-stone-700">${order.deliveryCost?.toFixed(2) || "0.00"}</span>
+                          <span className="font-medium text-stone-700">{formatPrice(order.deliveryCost ?? 0)}</span>
                         </div>
                         <div className="flex justify-between font-bold text-stone-900">
                           <span>Total</span>
-                          <span>${order.total.toFixed(2)}</span>
+                          <span>{formatPrice(order.total)}</span>
                         </div>
                       </div>
                       {order.proofOfPayment && (

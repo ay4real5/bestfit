@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useWishlist } from "@/components/WishlistProvider";
 import { Heart, ShoppingCart, ArrowLeft, ArrowRight } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
 export default function WishlistPage() {
@@ -54,7 +55,7 @@ export default function WishlistPage() {
               <div className="flex flex-1 flex-col p-5">
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">{product.category}</p>
                 <h3 className="mt-1.5 text-[15px] font-semibold text-stone-800">{product.name}</h3>
-                <p className="mt-1 text-lg font-bold text-stone-900">${product.price.toFixed(2)}</p>
+                <p className="mt-1 text-lg font-bold text-stone-900">{formatPrice(product.price)}</p>
                 <div className="mt-auto flex gap-2 pt-4">
                   <button
                     type="button"

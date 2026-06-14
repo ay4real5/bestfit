@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, SlidersHorizontal, ShoppingCart, Heart } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
 export default function ProductsContent() {
@@ -215,10 +216,10 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
         </Link>
         <div className="mt-auto flex items-center justify-between pt-4">
           <div className="flex items-center gap-2.5">
-            <span className="text-lg font-bold text-stone-900">${product.price.toFixed(2)}</span>
+            <span className="text-lg font-bold text-stone-900">{formatPrice(product.price)}</span>
             {product.compareAtPrice && (
               <span className="text-sm text-stone-400 line-through">
-                ${product.compareAtPrice.toFixed(2)}
+                {formatPrice(product.compareAtPrice)}
               </span>
             )}
           </div>

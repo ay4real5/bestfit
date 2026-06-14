@@ -15,6 +15,7 @@ import {
   TrendingUp,
   AlertCircle,
 } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function AdminDashboardPage() {
     },
     {
       label: "Inventory Value",
-      value: `$${totalValue.toFixed(0)}`,
+      value: formatPrice(totalValue),
       icon: DollarSign,
       color: "bg-emerald-50 text-emerald-600",
     },
@@ -156,7 +157,7 @@ export default function AdminDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-stone-500">Total Revenue</p>
-              <p className="mt-1 text-3xl font-bold text-stone-900">${ordersRevenue.toFixed(2)}</p>
+              <p className="mt-1 text-3xl font-bold text-stone-900">{formatPrice(ordersRevenue)}</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <TrendingUp className="h-5 w-5" />

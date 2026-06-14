@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, ArrowLeft, ArrowRight, Upload, Truck, MapPin, CreditCard, Building2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
+import { formatPrice } from "@/lib/currency";
 
 const BANK_DETAILS = {
   bankName: "First Bank of Nigeria",
@@ -206,7 +207,7 @@ export default function CheckoutPage() {
                     <p className="text-sm text-stone-500">We deliver to your doorstep</p>
                   </div>
                   <span className="text-sm font-semibold text-stone-900">
-                    {deliveryCost === 0 ? "Free" : `$${deliveryCost.toFixed(2)}`}
+                    {deliveryCost === 0 ? "Free" : formatPrice(deliveryCost)}
                   </span>
                 </label>
                 <label className={`flex items-center gap-4 rounded-xl border p-4 cursor-pointer transition-all ${deliveryMethod === "pickup" ? "border-primary bg-primary/[0.03] ring-1 ring-primary/20" : "border-stone-200 hover:bg-stone-50"}`}>
@@ -287,7 +288,7 @@ export default function CheckoutPage() {
               type="submit"
               className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40"
             >
-              Place Order — ${total.toFixed(2)} <ArrowRight className="h-4 w-4" />
+              Place Order — {formatPrice(total)} <ArrowRight className="h-4 w-4" />
             </button>
           </form>
         </div>
@@ -301,7 +302,7 @@ export default function CheckoutPage() {
               {items.map(({ product, quantity }) => (
                 <div key={product.id} className="flex justify-between text-[15px]">
                   <span className="text-stone-600">{product.name} <span className="text-stone-400">x{quantity}</span></span>
-                  <span className="font-medium text-stone-900">${(product.price * quantity).toFixed(2)}</span>
+                  <span className="font-medium text-stone-900">{formatPrice(product.price * quantity)}</span>
                 </div>
               ))}
             </div>
@@ -309,17 +310,17 @@ export default function CheckoutPage() {
             <div className="space-y-3 text-[15px]">
               <div className="flex justify-between">
                 <span className="text-stone-500">Subtotal</span>
-                <span className="font-medium text-stone-900">${subtotal.toFixed(2)}</span>
+                <span className="font-medium text-stone-900">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-stone-500">Delivery</span>
-                <span className="font-medium text-stone-900">{deliveryCost === 0 ? <span className="text-primary">Free</span> : `$${deliveryCost.toFixed(2)}`}</span>
+                <span className="font-medium text-stone-900">{deliveryCost === 0 ? <span className="text-primary">Free</span> : formatPrice(deliveryCost)}</span>
               </div>
             </div>
             <div className="my-5 h-px bg-stone-100" />
             <div className="flex justify-between text-lg font-bold text-stone-900">
               <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>{formatPrice(total)}</span>
             </div>
           </div>
         </div>
