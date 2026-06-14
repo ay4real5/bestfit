@@ -5,7 +5,7 @@ import Image from "next/image";
 import { getFeaturedProducts, getProducts, categories } from "@/lib/data";
 import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
-import { ArrowRight, Star, Truck, ShieldCheck, Clock, ShoppingCart, Heart, MessageCircle } from "lucide-react";
+import { ArrowRight, Star, Truck, ShieldCheck, Clock, ShoppingCart, Heart } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
@@ -50,14 +50,12 @@ export default function Home() {
               >
                 Shop Now <ArrowRight className="h-4 w-4" />
               </Link>
-              <a
-                href="https://wa.me/2340116227442?text=Hi%20Fest%20Fit%2C%20I%20want%20to%20place%20an%20order"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-green-500/40 bg-green-500/10 px-8 py-3.5 text-sm font-semibold text-green-400 backdrop-blur-sm transition-all hover:border-green-500/60 hover:bg-green-500/20 hover:text-green-300"
+              <Link
+                href="#featured"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-700 bg-stone-900/50 px-8 py-3.5 text-sm font-semibold text-stone-300 backdrop-blur-sm transition-all hover:border-stone-600 hover:bg-stone-800 hover:text-white"
               >
-                <MessageCircle className="h-4 w-4" /> Order on WhatsApp
-              </a>
+                View Best Sellers
+              </Link>
             </div>
           </div>
         </div>
