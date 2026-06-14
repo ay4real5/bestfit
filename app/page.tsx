@@ -5,7 +5,7 @@ import Image from "next/image";
 import { getFeaturedProducts, getProducts, categories } from "@/lib/data";
 import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
-import { ArrowRight, Star, Truck, ShieldCheck, Clock, ShoppingCart, Heart } from "lucide-react";
+import { ArrowRight, Star, Truck, ShieldCheck, Clock, ShoppingCart, Heart, MessageCircle } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-stone-950 py-24 md:py-36">
+      <section className="relative overflow-hidden bg-stone-950 py-20 md:py-36">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1600&h=900&fit=crop"
@@ -33,30 +33,31 @@ export default function Home() {
         <div className="container relative mx-auto px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
             <span className="mb-6 inline-block rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium tracking-wide text-primary uppercase">
-              Premium Supplements
+              Nigeria&apos;s Premium Supplement Store
             </span>
-            <h1 className="mb-6 text-5xl font-bold tracking-tight text-white md:text-7xl leading-[1.1]">
-              Fuel Your{" "}
-              <span className="text-primary">Fitness</span>{" "}
-              Journey
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-7xl leading-[1.1]">
+              Train Hard.{" "}
+              <span className="text-primary">Recover</span>{" "}
+              Smarter.
             </h1>
-            <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-stone-400">
-              High-quality protein, pre-workout, vitamins, and recovery
-              supplements trusted by athletes worldwide.
+            <p className="mx-auto mb-10 max-w-xl text-base leading-relaxed text-stone-400 md:text-lg">
+              Fest Fit delivers authentic, premium-quality supplements — protein, creatine, pre-workout and more — straight to your door across Nigeria.
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row justify-center">
+            <div className="flex flex-col gap-3 sm:flex-row justify-center">
               <Link
                 href="/products"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40"
               >
                 Shop Now <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link
-                href="#featured"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-700 bg-stone-900/50 px-8 py-3.5 text-sm font-semibold text-stone-300 backdrop-blur-sm transition-all hover:border-stone-600 hover:bg-stone-800 hover:text-white"
+              <a
+                href="https://wa.me/2340116227442?text=Hi%20Fest%20Fit%2C%20I%20want%20to%20place%20an%20order"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-green-500/40 bg-green-500/10 px-8 py-3.5 text-sm font-semibold text-green-400 backdrop-blur-sm transition-all hover:border-green-500/60 hover:bg-green-500/20 hover:text-green-300"
               >
-                View Best Sellers
-              </Link>
+                <MessageCircle className="h-4 w-4" /> Order on WhatsApp
+              </a>
             </div>
           </div>
         </div>
@@ -68,9 +69,9 @@ export default function Home() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: Truck, title: "Free Delivery", desc: "On orders over ₦50,000" },
-              { icon: ShieldCheck, title: "Lab Tested", desc: "Quality guaranteed" },
-              { icon: Star, title: "Top Rated", desc: "4.9/5 customer reviews" },
-              { icon: Clock, title: "Fast Delivery", desc: "2-3 business days" },
+              { icon: ShieldCheck, title: "100% Authentic", desc: "Genuine products only" },
+              { icon: Star, title: "Top Rated", desc: "Loved by Nigerian athletes" },
+              { icon: Clock, title: "Fast Delivery", desc: "Lagos same-day available" },
             ].map((f) => (
               <div
                 key={f.title}
@@ -185,7 +186,7 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
               src={product.image}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-contain transition-transform duration-500 group-hover:scale-105"
             />
             {product.compareAtPrice && (
               <span className="absolute left-3 top-3 rounded-full bg-red-500 px-2.5 py-1 text-xs font-semibold text-white">

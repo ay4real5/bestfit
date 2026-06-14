@@ -7,9 +7,9 @@ import { useCart } from "./CartProvider";
 import {
   ShoppingCart,
   Menu,
-  X,
   Search,
   Heart,
+  MessageCircle,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { useWishlist } from "./WishlistProvider";
@@ -136,7 +136,7 @@ export default function Header() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900"
+                      className="rounded-xl px-4 py-3 text-[15px] font-medium text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900"
                     >
                       {link.label}
                     </Link>
@@ -144,11 +144,20 @@ export default function Header() {
                   <Link
                     href={isLoggedIn ? "/account" : "/login"}
                     onClick={() => setMobileOpen(false)}
-                    className="rounded-lg px-3 py-2.5 text-[15px] font-medium text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900"
+                    className="rounded-xl px-4 py-3 text-[15px] font-medium text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900"
                   >
                     {isLoggedIn ? "My Account" : "Login"}
                   </Link>
                 </nav>
+                <a
+                  href="https://wa.me/2340116227442?text=Hi%20Fest%20Fit%2C%20I%20want%20to%20place%20an%20order"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 rounded-xl bg-green-50 px-4 py-3 text-[15px] font-semibold text-green-700 transition-colors hover:bg-green-100"
+                >
+                  <MessageCircle className="h-5 w-5 text-green-600" />
+                  Order on WhatsApp
+                </a>
               </div>
             </SheetContent>
           </Sheet>

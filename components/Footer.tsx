@@ -13,7 +13,7 @@ export default function Footer() {
     e.preventDefault();
     if (!email) return;
     setEmail("");
-    toast.success("You're subscribed! Welcome to the Fest Fit community.");
+    toast.success("You’re subscribed! Welcome to the Fest Fit family 💪");
   };
 
   return (
@@ -124,11 +124,11 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <Mail className="mt-0.5 h-4 w-4 text-primary" />
-                <span className="text-[15px] text-stone-500">support@festfit.com</span>
+                <span className="text-[15px] text-stone-500">festfitsupplements@gmail.com</span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 text-primary" />
-                <span className="text-[15px] text-stone-500">+234 812 345 6789</span>
+                <span className="text-[15px] text-stone-500">+234 011 622 7442</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 text-primary" />
