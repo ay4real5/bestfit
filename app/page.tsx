@@ -25,10 +25,10 @@ export default function Home() {
             src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1600&h=900&fit=crop"
             alt="Gym background"
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-60"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/60 via-stone-950/80 to-stone-950" />
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/30 via-stone-950/50 to-stone-950/80" />
         </div>
         <div className="container relative mx-auto px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
