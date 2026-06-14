@@ -11,9 +11,9 @@ import { toast } from "sonner";
 import { formatPrice } from "@/lib/currency";
 
 const BANK_DETAILS = {
-  bankName: "First Bank of Nigeria",
-  accountName: "Fest Fit Supplements Ltd",
-  accountNumber: "0123456789",
+  bankName: "GTBank (Guaranty Trust Bank)",
+  accountName: "Festus Isakunle",
+  accountNumber: "0116227442",
 };
 
 export default function CheckoutPage() {
