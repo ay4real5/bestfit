@@ -67,22 +67,22 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 md:px-6">
+    <div className="container mx-auto px-4 py-8 md:py-12 md:px-6">
       <Link
         href="/products"
-        className="mb-8 inline-flex items-center gap-1 text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors"
+        className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-stone-500 hover:text-stone-900 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Back to shop
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-2">
+      <div className="grid gap-8 lg:grid-cols-2">
         {/* Image */}
-        <div className="relative aspect-square overflow-hidden rounded-2xl border border-stone-100 bg-stone-100">
+        <div className="relative aspect-square overflow-hidden rounded-2xl border border-stone-100 bg-white">
           <Image
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover"
+            className="object-contain p-4"
             priority
           />
           {product.compareAtPrice && (
@@ -97,7 +97,7 @@ export default function ProductDetailPage() {
           <div className="mb-4">
             <span className="mb-3 inline-block text-[11px] font-semibold uppercase tracking-widest text-primary">{product.category}</span>
             <div className="flex items-start justify-between gap-4">
-              <h1 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">
+              <h1 className="text-2xl font-bold tracking-tight text-stone-900 md:text-4xl">
                 {product.name}
               </h1>
               <button
@@ -115,8 +115,8 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div className="mb-6 flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-stone-900">
+          <div className="mb-5 flex items-baseline gap-3">
+            <span className="text-2xl font-bold text-stone-900 md:text-3xl">
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
@@ -195,6 +195,20 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
+      {/* Mobile sticky add-to-cart */}
+      {product.inStock && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200 bg-white/95 backdrop-blur-sm px-4 py-3 lg:hidden">
+          <button
+            type="button"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90"
+            onClick={handleAddToCart}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Add to Cart — {formatPrice(product.price * quantity)}
+          </button>
+        </div>
+      )}
+
       {/* Related Products */}
       {related.length > 0 && (
         <section className="mt-20">
@@ -226,9 +240,9 @@ export default function ProductDetailPage() {
       )}
 
       {/* Product Tabs */}
-      <section className="mt-20">
-        <div className="border-b border-stone-200">
-          <nav className="flex gap-8">
+      <section className="mt-12 mb-20 lg:mb-0">
+        <div className="border-b border-stone-200 overflow-x-auto">
+          <nav className="flex gap-6 min-w-max">
             {["Description", "Nutrition Facts", `Reviews (${reviews.length})`].map((tab, i) => (
               <button
                 key={tab}

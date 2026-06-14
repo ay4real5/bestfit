@@ -81,52 +81,52 @@ export default function CartPage() {
           {items.map(({ product, quantity }) => (
             <div
               key={product.id}
-              className="flex gap-5 rounded-2xl border border-stone-100 bg-white p-5 transition-all hover:border-stone-200 hover:shadow-sm"
+              className="flex gap-4 rounded-2xl border border-stone-100 bg-white p-4 transition-all hover:border-stone-200 hover:shadow-sm"
             >
-              <Link href={`/products/${product.slug}`} className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-stone-100">
+              <Link href={`/products/${product.slug}`} className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-white border border-stone-100">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className="object-contain p-1"
                 />
               </Link>
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="text-[15px] font-semibold text-stone-900 hover:text-primary transition-colors"
+              <div className="flex flex-1 flex-col justify-between min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="text-[14px] font-semibold text-stone-900 hover:text-primary transition-colors line-clamp-2"
+                    >
+                      {product.name}
+                    </Link>
+                    <p className="mt-0.5 text-xs text-stone-400">{product.category}</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                    onClick={() => removeFromCart(product.id)}
                   >
-                    {product.name}
-                  </Link>
-                  <p className="mt-0.5 text-sm text-stone-400">{product.category}</p>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-2">
                   <div className="flex items-center rounded-xl border border-stone-200 bg-white">
                     <button
                       onClick={() => updateQuantity(product.id, quantity - 1)}
-                      className="flex h-9 w-9 items-center justify-center rounded-l-xl text-stone-500 transition-colors hover:bg-stone-50"
+                      className="flex h-8 w-8 items-center justify-center rounded-l-xl text-stone-500 transition-colors hover:bg-stone-50"
                     >
-                      <Minus className="h-3.5 w-3.5" />
+                      <Minus className="h-3 w-3" />
                     </button>
-                    <span className="w-8 text-center text-sm font-semibold text-stone-900">{quantity}</span>
+                    <span className="w-7 text-center text-sm font-semibold text-stone-900">{quantity}</span>
                     <button
                       onClick={() => updateQuantity(product.id, quantity + 1)}
-                      className="flex h-9 w-9 items-center justify-center rounded-r-xl text-stone-500 transition-colors hover:bg-stone-50"
+                      className="flex h-8 w-8 items-center justify-center rounded-r-xl text-stone-500 transition-colors hover:bg-stone-50"
                     >
-                      <Plus className="h-3.5 w-3.5" />
+                      <Plus className="h-3 w-3" />
                     </button>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-lg font-bold text-stone-900">{formatPrice(product.price * quantity)}</span>
-                    <button
-                      type="button"
-                      className="flex h-9 w-9 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-red-50 hover:text-red-500"
-                      onClick={() => removeFromCart(product.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
+                  <span className="text-base font-bold text-stone-900">{formatPrice(product.price * quantity)}</span>
                 </div>
               </div>
             </div>

@@ -62,9 +62,9 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="border-b border-stone-200 bg-white py-16">
+      <section className="border-b border-stone-200 bg-white py-10 md:py-16">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[
               { icon: Truck, title: "Free Delivery", desc: "On orders over ₦50,000" },
               { icon: ShieldCheck, title: "100% Authentic", desc: "Genuine products only" },
@@ -96,7 +96,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">Shop by Category</h2>
             <p className="mt-3 text-stone-500">Find the perfect supplement for your goals</p>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {categories.slice(0, 4).map((cat) => (
               <Link key={cat} href={`/products?category=${encodeURIComponent(cat)}`}>
                 <div className="group flex items-center justify-between rounded-2xl border border-stone-200 bg-white p-6 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-stone-200/40">
@@ -131,7 +131,7 @@ export default function Home() {
               View All <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {featured.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -147,7 +147,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold tracking-tight text-stone-900 md:text-4xl">New Arrivals</h2>
             <p className="mt-3 text-stone-500">The latest additions to our supplement range</p>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {latest.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -213,18 +213,18 @@ function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col p-3 sm:p-5">
         <Link href={`/products/${product.slug}`}>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-stone-400">
+          <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-stone-400">
             {product.category}
           </p>
-          <h3 className="mt-1.5 text-[15px] font-semibold leading-snug text-stone-800 group-hover:text-primary transition-colors">
+          <h3 className="mt-1.5 text-[13px] sm:text-[15px] font-semibold leading-snug text-stone-800 group-hover:text-primary transition-colors line-clamp-2">
             {product.name}
           </h3>
         </Link>
         <div className="mt-auto flex items-center justify-between pt-4">
           <div className="flex items-center gap-2.5">
-            <span className="text-lg font-bold text-stone-900">{formatPrice(product.price)}</span>
+            <span className="text-sm sm:text-lg font-bold text-stone-900">{formatPrice(product.price)}</span>
             {product.compareAtPrice && (
               <span className="text-sm text-stone-400 line-through">
                 {formatPrice(product.compareAtPrice)}
