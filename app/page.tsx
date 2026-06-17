@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getFeaturedProducts, getProducts, categories } from "@/lib/data";
+import { categories } from "@/lib/data";
+import { Product } from "@/lib/types";
 import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
 import { ArrowRight, Star, Truck, ShieldCheck, Clock, ShoppingCart, Heart } from "lucide-react";
@@ -10,11 +12,23 @@ import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
 export default function Home() {
-  const featured = getFeaturedProducts();
-  const allProducts = getProducts();
-  const latest = [...allProducts].sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt)
-  ).slice(0, 4);
+  const [featured, setFeatured] = useState<Product[]>([]);
+  const [latest, setLatest] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch("/api/products?featured=true")
+      .then((res) => res.json())
+      .then((data) => setFeatured(data))
+      .catch(console.error);
+
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data: Product[]) => {
+        const sorted = [...data].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 4);
+        setLatest(sorted);
+      })
+      .catch(console.error);
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -158,7 +172,7 @@ export default function Home() {
   );
 }
 
-function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }) {
+function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const inWishlist = isInWishlist(product.id);

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getProducts } from "@/lib/data";
+import { Product } from "@/lib/types";
 import {
   Package,
   DollarSign,
@@ -19,7 +19,7 @@ import { formatPrice } from "@/lib/currency";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
-  const products = getProducts();
+  const [products, setProducts] = useState<Product[]>([]);
   const [ordersCount, setOrdersCount] = useState(0);
   const [ordersRevenue, setOrdersRevenue] = useState(0);
 
@@ -27,6 +27,12 @@ export default function AdminDashboardPage() {
     if (typeof window !== "undefined" && !localStorage.getItem("festfit_admin")) {
       router.push("/admin/login");
     }
+
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch(console.error);
+
     const raw = localStorage.getItem("festfit_orders");
     if (raw) {
       try {

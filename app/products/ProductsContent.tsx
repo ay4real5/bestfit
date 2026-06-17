@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { getProducts, categories } from "@/lib/data";
+import { categories } from "@/lib/data";
+import { Product } from "@/lib/types";
 import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
 import { Input } from "@/components/ui/input";
@@ -26,8 +27,14 @@ export default function ProductsContent() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(initialCategory);
   const [sort, setSort] = useState("featured");
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
-  const allProducts = getProducts();
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setAllProducts(data))
+      .catch(console.error);
+  }, []);
 
   const filtered = useMemo(() => {
     let result = [...allProducts];
@@ -142,7 +149,7 @@ export default function ProductsContent() {
   );
 }
 
-function ProductCard({ product }: { product: ReturnType<typeof getProducts>[0] }) {
+function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const inWishlist = isInWishlist(product.id);

@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {
-  getProducts,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  categories,
-} from "@/lib/data";
+import { categories } from "@/lib/data";
 import { Product } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2, Search, ArrowLeft } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, ArrowLeft, Upload, X } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { toast } from "sonner";
 
@@ -48,11 +42,23 @@ export default function AdminProductsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
 
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== "undefined" && !localStorage.getItem("festfit_admin")) {
       router.push("/admin/login");
     }
-    setProducts(getProducts());
+    fetchProducts();
   }, [router]);
 
   const filtered = products.filter((p) =>
@@ -89,29 +95,92 @@ export default function AdminProductsPage() {
     setDialogOpen(true);
   };
 
-  const handleSave = () => {
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
     if (!form.name || !form.slug || form.price <= 0) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    if (editing) {
-      updateProduct(form);
-      toast.success("Product updated");
-    } else {
-      addProduct(form);
-      toast.success("Product added");
-    }
+    setSaving(true);
+    try {
+      if (editing) {
+        const res = await fetch(`/api/products/${form.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error("Failed to update product");
+        toast.success("Product updated");
+      } else {
+        const res = await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error("Failed to add product");
+        toast.success("Product added");
+      }
 
-    setProducts(getProducts());
-    setDialogOpen(false);
+      await fetchProducts();
+      setDialogOpen(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save product");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      deleteProduct(id);
-      setProducts(getProducts());
-      toast.success("Product deleted");
+      try {
+        const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete product");
+        await fetchProducts();
+        toast.success("Product deleted");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Failed to delete product");
+      }
+    }
+  };
+
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const { url } = await res.json();
+      setForm({ ...form, image: url });
+      toast.success("Image uploaded");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to upload image");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -361,15 +430,59 @@ export default function AdminProductsPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="image">Image URL</Label>
-                <Input
-                  id="image"
-                  value={form.image}
-                  onChange={(e) =>
-                    setForm({ ...form, image: e.target.value })
-                  }
-                  placeholder="https://..."
-                />
+                <Label>Product Image</Label>
+                <div className="space-y-3">
+                  {form.image && (
+                    <div className="relative inline-block">
+                      <div className="relative h-24 w-24 overflow-hidden rounded-xl border border-stone-200 bg-stone-50">
+                        <Image
+                          src={form.image}
+                          alt="Preview"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-sm hover:bg-red-600"
+                        onClick={() => setForm({ ...form, image: "" })}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+                  <label
+                    htmlFor="imageUpload"
+                    className={`flex items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-3 text-sm font-medium transition-colors ${
+                      uploading
+                        ? "border-stone-300 bg-stone-100 text-stone-400 cursor-wait"
+                        : "border-stone-200 bg-stone-50 text-stone-500 cursor-pointer hover:border-primary hover:bg-primary/5 hover:text-primary"
+                    }`}
+                  >
+                    <Upload className={`h-4 w-4 ${uploading ? "animate-pulse" : ""}`} />
+                    {uploading ? "Uploading..." : form.image ? "Change image" : "Upload image"}
+                  </label>
+                  <input
+                    id="imageUpload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={handleImageUpload}
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-stone-400">or</span>
+                    <Input
+                      id="image"
+                      value={form.image}
+                      onChange={(e) =>
+                        setForm({ ...form, image: e.target.value })
+                      }
+                      placeholder="Paste image URL..."
+                      className="text-xs"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -430,7 +543,7 @@ export default function AdminProductsPage() {
               className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90"
               onClick={handleSave}
             >
-              {editing ? "Save Changes" : "Add Product"}
+              {saving ? "Saving..." : editing ? "Save Changes" : "Add Product"}
             </button>
           </div>
         </DialogContent>

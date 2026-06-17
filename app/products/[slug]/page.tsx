@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { getProductBySlug, getProducts, getReviewsByProduct } from "@/lib/data";
+import { getReviewsByProduct } from "@/lib/data";
+import { Product } from "@/lib/types";
 import { useCart } from "@/components/CartProvider";
 import { useWishlist } from "@/components/WishlistProvider";
 import StarRating from "@/components/StarRating";
@@ -26,12 +27,43 @@ import { formatPrice } from "@/lib/currency";
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const product = getProductBySlug(slug);
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
-  const inWishlist = product ? isInWishlist(product.id) : false;
+  const [product, setProduct] = useState<Product | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/products?slug=${encodeURIComponent(slug)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then((data: Product) => {
+        setProduct(data);
+        // Fetch related products
+        return fetch(`/api/products?category=${encodeURIComponent(data.category)}`);
+      })
+      .then((res) => res.json())
+      .then((data: Product[]) => {
+        setRelated(data.filter((p) => p.slug !== slug).slice(0, 3));
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  const inWishlist = product ? isInWishlist(product.id) : false;
+
+  if (loading) {
+    return (
+      <div className="container mx-auto flex items-center justify-center px-4 py-32 md:px-6">
+        <p className="text-stone-400">Loading product...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -50,10 +82,6 @@ export default function ProductDetailPage() {
       </div>
     );
   }
-
-  const related = getProducts()
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 3);
 
   const reviews = getReviewsByProduct(product.id);
   const avgRating =
