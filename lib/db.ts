@@ -3,19 +3,35 @@ import path from "path";
 import { Product } from "./types";
 import { initialProducts } from "./data";
 
-const DB_PATH = path.join(process.cwd(), "data", "products.json");
+const IS_VERCEL = !!process.env.VERCEL;
+
+// On Vercel, use /tmp (writable). Locally, use project data/ folder.
+const DB_PATH = IS_VERCEL
+  ? path.join("/tmp", "products.json")
+  : path.join(process.cwd(), "data", "products.json");
+
+// In-memory fallback for when filesystem is completely unavailable
+let memoryProducts: Product[] | null = null;
 
 function ensureDataDir() {
-  const dir = path.dirname(DB_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  try {
+    const dir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  } catch {
+    // Silently fail — will use in-memory fallback
   }
 }
 
 function seedIfNeeded() {
-  ensureDataDir();
-  if (!fs.existsSync(DB_PATH)) {
-    fs.writeFileSync(DB_PATH, JSON.stringify(initialProducts, null, 2), "utf-8");
+  try {
+    ensureDataDir();
+    if (!fs.existsSync(DB_PATH)) {
+      fs.writeFileSync(DB_PATH, JSON.stringify(initialProducts, null, 2), "utf-8");
+    }
+  } catch {
+    // Could not write seed — will use initialProducts as fallback
   }
 }
 
@@ -25,13 +41,18 @@ export function readProducts(): Product[] {
     const raw = fs.readFileSync(DB_PATH, "utf-8");
     return JSON.parse(raw) as Product[];
   } catch {
-    return [...initialProducts];
+    return memoryProducts ?? [...initialProducts];
   }
 }
 
 export function writeProducts(products: Product[]): void {
-  ensureDataDir();
-  fs.writeFileSync(DB_PATH, JSON.stringify(products, null, 2), "utf-8");
+  memoryProducts = products;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(DB_PATH, JSON.stringify(products, null, 2), "utf-8");
+  } catch {
+    // Filesystem write failed — data saved in memory only
+  }
 }
 
 export function getProductById(id: string): Product | undefined {
