@@ -33,14 +33,13 @@ export default function AdminDashboardPage() {
       .then((data) => setProducts(data))
       .catch(console.error);
 
-    const raw = localStorage.getItem("festfit_orders");
-    if (raw) {
-      try {
-        const all = JSON.parse(raw);
-        setOrdersCount(all.length);
-        setOrdersRevenue(all.reduce((sum: number, o: any) => sum + (o.total || 0), 0));
-      } catch {}
-    }
+    fetch("/api/orders")
+      .then((res) => res.json())
+      .then((data) => {
+        setOrdersCount(data.length);
+        setOrdersRevenue(data.reduce((sum: number, o: { total: number }) => sum + (o.total || 0), 0));
+      })
+      .catch(console.error);
   }, [router]);
 
   const totalProducts = products.length;

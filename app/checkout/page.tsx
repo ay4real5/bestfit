@@ -6,7 +6,7 @@ import { useCart } from "@/components/CartProvider";
 import { useAuth } from "@/components/AuthProvider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, ArrowLeft, ArrowRight, Upload, Truck, MapPin, CreditCard, Building2, ShoppingBag } from "lucide-react";
+import { CheckCircle, ArrowLeft, ArrowRight, Upload, Truck, MapPin, CreditCard, Building2, ShoppingBag, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/currency";
 
@@ -25,6 +25,7 @@ export default function CheckoutPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "delivery">("delivery");
   const [paymentMethod, setPaymentMethod] = useState<"bank_transfer" | "card">("bank_transfer");
   const [proofOfPayment, setProofOfPayment] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
 
   const deliveryCost = useMemo(() => {
     if (deliveryMethod === "pickup") return 0;
@@ -56,12 +57,14 @@ export default function CheckoutPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (paymentMethod === "bank_transfer" && !proofOfPayment) {
       toast.error("Please upload proof of payment for bank transfer");
       return;
     }
+
+    setProcessing(true);
 
     const id = `ORD-${Date.now()}`;
     setOrderId(id);
@@ -88,10 +91,54 @@ export default function CheckoutPage() {
       createdAt: new Date().toISOString(),
     };
 
-    addOrder(order);
-    setSubmitted(true);
-    clearCart();
-    toast.success("Order placed successfully!");
+    try {
+      // Save order to Supabase
+      const saveRes = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order),
+      });
+
+      if (!saveRes.ok) {
+        throw new Error("Failed to save order");
+      }
+
+      // Also save to localStorage for backward compatibility
+      addOrder(order);
+
+      if (paymentMethod === "card") {
+        // Initialize Paystack payment
+        const payRes = await fetch("/api/payment/initialize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: form.email,
+            amount: total,
+            orderId: id,
+            callbackUrl: `${window.location.origin}/checkout/verify`,
+          }),
+        });
+
+        if (!payRes.ok) {
+          const payErr = await payRes.json();
+          throw new Error(payErr.error || "Failed to initialize payment");
+        }
+
+        const payData = await payRes.json();
+        // Redirect to Paystack checkout
+        window.location.href = payData.authorizationUrl;
+        return;
+      }
+
+      // Bank transfer: just show confirmation
+      setSubmitted(true);
+      clearCart();
+      toast.success("Order placed successfully!");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to place order");
+    } finally {
+      setProcessing(false);
+    }
   };
 
   if (items.length === 0 && !submitted) {
@@ -286,9 +333,20 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40"
+              disabled={processing}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Place Order — {formatPrice(total)} <ArrowRight className="h-4 w-4" />
+              {processing ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  {paymentMethod === "card" ? "Redirecting to payment..." : "Placing order..."}
+                </>
+              ) : (
+                <>
+                  {paymentMethod === "card" ? `Pay Now — ${formatPrice(total)}` : `Place Order — ${formatPrice(total)}`}
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
           </form>
         </div>

@@ -49,8 +49,6 @@ const statusColors: Record<string, string> = {
   paid: "bg-green-100 text-green-800",
 };
 
-const ALL_ORDERS_KEY = "festfit_all_orders";
-
 function StatusBadge({ status }: { status: string }) {
   const cls = statusColors[status] || "bg-stone-100 text-stone-800";
   return (
@@ -64,6 +62,7 @@ export default function AdminOrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<StoredOrder[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<StoredOrder | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined" && !localStorage.getItem("festfit_admin")) {
@@ -71,22 +70,53 @@ export default function AdminOrdersPage() {
     }
   }, [router]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem(ALL_ORDERS_KEY);
-      if (saved) {
-        try {
-          setOrders(JSON.parse(saved));
-        } catch {}
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch("/api/orders");
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data.map((o: Record<string, unknown>) => ({
+          id: o.id,
+          items: typeof o.items === "string" ? JSON.parse(o.items) : o.items,
+          subtotal: Number(o.subtotal),
+          deliveryCost: Number(o.delivery_cost ?? o.deliveryCost ?? 0),
+          total: Number(o.total),
+          status: o.status,
+          customerEmail: o.customer_email ?? o.customerEmail,
+          customerName: o.customer_name ?? o.customerName,
+          address: o.address,
+          city: o.city,
+          phone: o.phone,
+          deliveryMethod: o.delivery_method ?? o.deliveryMethod,
+          paymentMethod: o.payment_method ?? o.paymentMethod,
+          proofOfPayment: o.proof_of_payment ?? o.proofOfPayment,
+          createdAt: o.created_at ?? o.createdAt,
+        })));
       }
+    } catch (err) {
+      console.error("Failed to fetch orders:", err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchOrders();
   }, []);
 
-  const updateStatus = (orderId: string, status: string) => {
-    const updated = orders.map((o) => (o.id === orderId ? { ...o, status } : o));
-    setOrders(updated);
-    localStorage.setItem(ALL_ORDERS_KEY, JSON.stringify(updated));
-    toast.success(`Order ${orderId} marked as ${status}`);
+  const updateStatus = async (orderId: string, status: string) => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error("Failed to update order");
+      toast.success(`Order ${orderId} marked as ${status}`);
+      await fetchOrders();
+    } catch (err) {
+      toast.error("Failed to update order status");
+    }
   };
 
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
@@ -248,7 +278,7 @@ export default function AdminOrdersPage() {
             {orders.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-8 text-stone-400">
-                  No orders yet.
+                  {loading ? "Loading orders..." : "No orders yet."}
                 </TableCell>
               </TableRow>
             )}
