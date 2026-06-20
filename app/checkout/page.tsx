@@ -13,7 +13,7 @@ import { formatPrice } from "@/lib/currency";
 const BANK_DETAILS = {
   bankName: "GTBank (Guaranty Trust Bank)",
   accountName: "Festus Isakunle",
-  accountNumber: "0116227442",
+  accountNumber: "07068398640",
 };
 
 export default function CheckoutPage() {
