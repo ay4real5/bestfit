@@ -36,7 +36,7 @@ export default function RootLayout({
               <Footer />
               <Toaster position="top-right" />
               <a
-                href="https://wa.me/2340116227442?text=Hi%20Fest%20Fit%2C%20I%20want%20to%20place%20an%20order"
+                href="https://wa.me/2347068398640?text=Hi%20Fest%20Fit%2C%20I%20want%20to%20place%20an%20order"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat on WhatsApp"
