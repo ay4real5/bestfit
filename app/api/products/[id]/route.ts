@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const product = getProductById(id);
+    const product = await getProductById(id);
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
@@ -27,7 +27,7 @@ export async function PUT(
     const { id } = await params;
     const updated: Product = await request.json();
     updated.id = id;
-    updateProductDb(updated);
+    await updateProductDb(updated);
     return NextResponse.json(updated);
   } catch (error) {
     console.error("PUT /api/products/[id] error:", error);
@@ -41,7 +41,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    deleteProductDb(id);
+    await deleteProductDb(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DELETE /api/products/[id] error:", error);

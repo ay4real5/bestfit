@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category");
     const featured = searchParams.get("featured");
 
-    let products = readProducts();
+    let products = await readProducts();
 
     if (slug) {
       const product = products.find((p) => p.slug === slug);
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       product.id = Date.now().toString();
     }
 
-    addProductDb(product);
+    await addProductDb(product);
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error("POST /api/products error:", error);

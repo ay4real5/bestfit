@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
-
-const IS_VERCEL = !!process.env.VERCEL;
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,29 +27,36 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    if (IS_VERCEL) {
-      // On Vercel, return a base64 data URL since filesystem is ephemeral
-      const base64 = buffer.toString("base64");
-      const url = `data:${file.type};base64,${base64}`;
-      return NextResponse.json({ url });
-    }
-
-    // Locally, save to public/products/
-    const ext = path.extname(file.name) || ".jpg";
+    // Generate unique filename
+    const ext = file.name.split('.').pop() || "jpg";
     const safeName = file.name
       .replace(/\.[^/.]+$/, "")
       .replace(/[^a-zA-Z0-9-_]/g, "-")
       .toLowerCase();
-    const uniqueName = `${safeName}-${Date.now()}${ext}`;
+    const uniqueName = `${safeName}-${Date.now()}.${ext}`;
 
-    const productsDir = path.join(process.cwd(), "public", "products");
-    await mkdir(productsDir, { recursive: true });
+    // Upload to Supabase Storage
+    const { data, error } = await supabaseAdmin.storage
+      .from('products')
+      .upload(uniqueName, buffer, {
+        contentType: file.type,
+        upsert: false,
+      });
 
-    const filePath = path.join(productsDir, uniqueName);
-    await writeFile(filePath, buffer);
+    if (error) {
+      console.error("Supabase upload error:", error);
+      return NextResponse.json(
+        { error: "Failed to upload image to storage" },
+        { status: 500 }
+      );
+    }
 
-    const url = `/products/${uniqueName}`;
-    return NextResponse.json({ url });
+    // Get public URL
+    const { data: { publicUrl } } = supabaseAdmin.storage
+      .from('products')
+      .getPublicUrl(uniqueName);
+
+    return NextResponse.json({ url: publicUrl });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(

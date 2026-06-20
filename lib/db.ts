@@ -1,92 +1,143 @@
-import fs from "fs";
-import path from "path";
 import { Product } from "./types";
-import { initialProducts } from "./data";
+import { supabaseAdmin } from "./supabase";
 
-const IS_VERCEL = !!process.env.VERCEL;
+export async function readProducts(): Promise<Product[]> {
+  const { data, error } = await supabaseAdmin
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-// On Vercel, use /tmp (writable). Locally, use project data/ folder.
-const DB_PATH = IS_VERCEL
-  ? path.join("/tmp", "products.json")
-  : path.join(process.cwd(), "data", "products.json");
+  if (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
 
-// In-memory fallback for when filesystem is completely unavailable
-let memoryProducts: Product[] | null = null;
+  return data || [];
+}
 
-function ensureDataDir() {
-  try {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-  } catch {
-    // Silently fail — will use in-memory fallback
+export async function getProductById(id: string): Promise<Product | undefined> {
+  const { data, error } = await supabaseAdmin
+    .from('products')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching product by id:', error);
+    return undefined;
+  }
+
+  return data;
+}
+
+export async function getProductBySlugDb(slug: string): Promise<Product | undefined> {
+  const { data, error } = await supabaseAdmin
+    .from('products')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Error fetching product by slug:', error);
+    return undefined;
+  }
+
+  return data;
+}
+
+export async function getFeaturedProductsDb(): Promise<Product[]> {
+  const { data, error } = await supabaseAdmin
+    .from('products')
+    .select('*')
+    .eq('featured', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching featured products:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function getProductsByCategoryDb(category: string): Promise<Product[]> {
+  const { data, error } = await supabaseAdmin
+    .from('products')
+    .select('*')
+    .eq('category', category)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching products by category:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function addProductDb(product: Product): Promise<void> {
+  const { error } = await supabaseAdmin
+    .from('products')
+    .insert({
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      price: product.price,
+      compare_at_price: product.compareAtPrice,
+      image: product.image,
+      category: product.category,
+      tags: product.tags,
+      in_stock: product.inStock,
+      inventory: product.inventory,
+      featured: product.featured,
+      weight: product.weight,
+      servings: product.servings,
+      created_at: product.createdAt,
+      delivery_cost: product.deliveryCost,
+    });
+
+  if (error) {
+    console.error('Error adding product:', error);
+    throw error;
   }
 }
 
-function seedIfNeeded() {
-  try {
-    ensureDataDir();
-    if (!fs.existsSync(DB_PATH)) {
-      fs.writeFileSync(DB_PATH, JSON.stringify(initialProducts, null, 2), "utf-8");
-    }
-  } catch {
-    // Could not write seed — will use initialProducts as fallback
+export async function updateProductDb(updated: Product): Promise<void> {
+  const { error } = await supabaseAdmin
+    .from('products')
+    .update({
+      name: updated.name,
+      slug: updated.slug,
+      description: updated.description,
+      price: updated.price,
+      compare_at_price: updated.compareAtPrice,
+      image: updated.image,
+      category: updated.category,
+      tags: updated.tags,
+      in_stock: updated.inStock,
+      inventory: updated.inventory,
+      featured: updated.featured,
+      weight: updated.weight,
+      servings: updated.servings,
+      delivery_cost: updated.deliveryCost,
+    })
+    .eq('id', updated.id);
+
+  if (error) {
+    console.error('Error updating product:', error);
+    throw error;
   }
 }
 
-export function readProducts(): Product[] {
-  seedIfNeeded();
-  try {
-    const raw = fs.readFileSync(DB_PATH, "utf-8");
-    return JSON.parse(raw) as Product[];
-  } catch {
-    return memoryProducts ?? [...initialProducts];
+export async function deleteProductDb(id: string): Promise<void> {
+  const { error } = await supabaseAdmin
+    .from('products')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting product:', error);
+    throw error;
   }
-}
-
-export function writeProducts(products: Product[]): void {
-  memoryProducts = products;
-  try {
-    ensureDataDir();
-    fs.writeFileSync(DB_PATH, JSON.stringify(products, null, 2), "utf-8");
-  } catch {
-    // Filesystem write failed — data saved in memory only
-  }
-}
-
-export function getProductById(id: string): Product | undefined {
-  return readProducts().find((p) => p.id === id);
-}
-
-export function getProductBySlugDb(slug: string): Product | undefined {
-  return readProducts().find((p) => p.slug === slug);
-}
-
-export function getFeaturedProductsDb(): Product[] {
-  return readProducts().filter((p) => p.featured);
-}
-
-export function getProductsByCategoryDb(category: string): Product[] {
-  return readProducts().filter((p) => p.category === category);
-}
-
-export function addProductDb(product: Product): void {
-  const products = readProducts();
-  products.push(product);
-  writeProducts(products);
-}
-
-export function updateProductDb(updated: Product): void {
-  const products = readProducts();
-  const index = products.findIndex((p) => p.id === updated.id);
-  if (index !== -1) {
-    products[index] = updated;
-    writeProducts(products);
-  }
-}
-
-export function deleteProductDb(id: string): void {
-  const products = readProducts().filter((p) => p.id !== id);
-  writeProducts(products);
 }
