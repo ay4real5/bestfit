@@ -26,7 +26,7 @@ export default function CartPage() {
   const [promoInput, setPromoInput] = useState("");
   const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number } | null>(null);
 
-  const shipping = subtotal >= 50000 ? 0 : 3000;
+  const shipping = subtotal >= 100000 ? 0 : 3000;
   const discount = promoApplied ? promoApplied.discount : 0;
   const total = Math.max(0, subtotal + shipping - discount);
 
@@ -171,7 +171,7 @@ export default function CartPage() {
               </div>
               {shipping > 0 && (
                 <p className="text-xs text-stone-400">
-                  Add {formatPrice(50000 - subtotal)} more for free shipping!
+                  Add {formatPrice(100000 - subtotal)} more for free shipping!
                 </p>
               )}
               {promoApplied && (

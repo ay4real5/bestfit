@@ -16,7 +16,7 @@ const faqs = [
   {
     question: "How long does delivery take?",
     answer:
-      "Orders are processed within 1-2 business days. Standard delivery takes 2-3 business days within Lagos and 3-5 business days to other states. Orders over ₦50,000 qualify for free delivery.",
+      "Orders are processed within 1-2 business days. Standard delivery takes 2-3 business days within Lagos and 3-5 business days to other states. Orders over ₦100,000 qualify for free delivery.",
   },
   {
     question: "Are your supplements lab tested?",
