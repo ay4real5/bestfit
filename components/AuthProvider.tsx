@@ -16,6 +16,8 @@ interface OrderRecord {
   items: { name: string; quantity: number; price: number }[];
   subtotal: number;
   deliveryCost: number;
+  discount?: number;
+  promoCode?: string;
   total: number;
   status: string;
   customerEmail: string;

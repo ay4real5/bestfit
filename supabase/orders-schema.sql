@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS orders (
   payment_method TEXT NOT NULL DEFAULT 'bank_transfer',
   proof_of_payment TEXT,
   payment_reference TEXT,
+  discount NUMERIC DEFAULT 0,
+  promo_code TEXT,
   paid_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

@@ -169,7 +169,7 @@ export default function ProductDetailPage() {
             )}
             <div className="flex items-center gap-2 text-stone-500">
               <Truck className="h-4 w-4 text-primary" />
-              Free shipping over ₦100,000
+              Free delivery over ₦100,000; otherwise calculated by location
             </div>
             <div className="flex items-center gap-2 text-stone-500">
               <RotateCcw className="h-4 w-4 text-primary" />

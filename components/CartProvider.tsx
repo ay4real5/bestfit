@@ -4,6 +4,12 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import { Product, CartItem } from "@/lib/types";
 
 const CART_KEY = "festfit_cart";
+const PROMO_KEY = "festfit_promo";
+
+interface AppliedPromo {
+  code: string;
+  discount: number;
+}
 
 interface CartContextType {
   items: CartItem[];
@@ -13,6 +19,11 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   subtotal: number;
+  promo: AppliedPromo | null;
+  applyPromo: (promo: AppliedPromo) => void;
+  removePromo: () => void;
+  discount: number;
+  total: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -28,11 +39,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
+  const [promo, setPromo] = useState<AppliedPromo | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const stored = localStorage.getItem(PROMO_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+
   useEffect(() => {
     try {
       localStorage.setItem(CART_KEY, JSON.stringify(items));
     } catch {}
   }, [items]);
+
+  useEffect(() => {
+    try {
+      if (promo) {
+        localStorage.setItem(PROMO_KEY, JSON.stringify(promo));
+      } else {
+        localStorage.removeItem(PROMO_KEY);
+      }
+    } catch {}
+  }, [promo]);
 
   const addToCart = useCallback((product: Product, quantity = 1) => {
     setItems((prev) => {
@@ -66,6 +97,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = useCallback(() => {
     setItems([]);
+    setPromo(null);
+  }, []);
+
+  const applyPromo = useCallback((newPromo: AppliedPromo) => {
+    setPromo(newPromo);
+  }, []);
+
+  const removePromo = useCallback(() => {
+    setPromo(null);
   }, []);
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -73,6 +113,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
+  const discount = promo ? promo.discount : 0;
+  const total = Math.max(0, subtotal - discount);
 
   return (
     <CartContext.Provider
@@ -84,6 +126,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         totalItems,
         subtotal,
+        promo,
+        applyPromo,
+        removePromo,
+        discount,
+        total,
       }}
     >
       {children}

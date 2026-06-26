@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle, ArrowLeft, ArrowRight, Upload, Truck, MapPin, CreditCard, Building2, ShoppingBag, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/currency";
+import { getDeliveryPrice, FREE_DELIVERY_THRESHOLD } from "@/lib/delivery";
 
 const BANK_DETAILS = {
   bankName: "GTBank (Guaranty Trust Bank)",
@@ -17,7 +18,7 @@ const BANK_DETAILS = {
 };
 
 export default function CheckoutPage() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, promo, discount, removePromo } = useCart();
   const { customer, addOrder } = useAuth();
   const [submitted, setSubmitted] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -27,13 +28,6 @@ export default function CheckoutPage() {
   const [proofOfPayment, setProofOfPayment] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
 
-  const deliveryCost = useMemo(() => {
-    if (deliveryMethod === "pickup") return 0;
-    return items.reduce((sum, { product, quantity }) => sum + (product.deliveryCost || 0) * quantity, 0);
-  }, [deliveryMethod, items]);
-
-  const total = subtotal + deliveryCost;
-
   const [form, setForm] = useState({
     name: customer?.name || "",
     email: customer?.email || "",
@@ -41,6 +35,14 @@ export default function CheckoutPage() {
     city: customer?.city || "",
     phone: customer?.phone || "",
   });
+
+  const deliveryCost = useMemo(() => {
+    if (deliveryMethod === "pickup") return 0;
+    if (subtotal >= FREE_DELIVERY_THRESHOLD) return 0;
+    return getDeliveryPrice(form.city);
+  }, [deliveryMethod, subtotal, form.city]);
+
+  const total = Math.max(0, subtotal + deliveryCost - discount);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -78,6 +80,8 @@ export default function CheckoutPage() {
       })),
       subtotal,
       deliveryCost,
+      discount,
+      promoCode: promo?.code,
       total,
       status: paymentMethod === "bank_transfer" ? "awaiting_payment" : "pending",
       customerEmail: form.email,
@@ -372,8 +376,25 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-stone-500">Delivery</span>
-                <span className="font-medium text-stone-900">{deliveryCost === 0 ? <span className="text-primary">Free</span> : formatPrice(deliveryCost)}</span>
+                <span className="font-medium text-stone-900">
+                  {deliveryMethod === "pickup" ? (
+                    "Pickup"
+                  ) : deliveryCost === 0 ? (
+                    <span className="text-primary">Free</span>
+                  ) : (
+                    formatPrice(deliveryCost)
+                  )}
+                </span>
               </div>
+              {form.city && deliveryMethod === "delivery" && deliveryCost > 0 && (
+                <p className="text-xs text-stone-400">Delivery price for {form.city}</p>
+              )}
+              {discount > 0 && (
+                <div className="flex justify-between text-primary">
+                  <span>Discount {promo?.code ? `(${promo.code})` : ""}</span>
+                  <span className="font-medium">-{formatPrice(discount)}</span>
+                </div>
+              )}
             </div>
             <div className="my-5 h-px bg-stone-100" />
             <div className="flex justify-between text-lg font-bold text-stone-900">

@@ -22,27 +22,25 @@ import { toast } from "sonner";
 import { formatPrice } from "@/lib/currency";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeFromCart, subtotal, clearCart } = useCart();
+  const { items, updateQuantity, removeFromCart, subtotal, clearCart, promo, applyPromo, removePromo, discount, total } = useCart();
   const [promoInput, setPromoInput] = useState("");
-  const [promoApplied, setPromoApplied] = useState<{ code: string; discount: number } | null>(null);
 
-  const shipping = subtotal >= 100000 ? 0 : 3000;
-  const discount = promoApplied ? promoApplied.discount : 0;
-  const total = Math.max(0, subtotal + shipping - discount);
+  const qualifiesForFreeDelivery = subtotal >= 100000;
+  const shipping = qualifiesForFreeDelivery ? 0 : null;
 
-  const applyPromo = () => {
-    const promo = getPromoCode(promoInput);
-    if (!promo) {
+  const handleApplyPromo = () => {
+    const promoCode = getPromoCode(promoInput);
+    if (!promoCode) {
       toast.error("Invalid promo code");
       return;
     }
-    const discountAmount = promo.type === "percent" ? subtotal * (promo.discount / 100) : promo.discount;
-    setPromoApplied({ code: promo.code, discount: discountAmount });
-    toast.success(`Promo code ${promo.code} applied!`);
+    const discountAmount = promoCode.type === "percent" ? subtotal * (promoCode.discount / 100) : promoCode.discount;
+    applyPromo({ code: promoCode.code, discount: discountAmount });
+    toast.success(`Promo code ${promoCode.code} applied!`);
   };
 
-  const removePromo = () => {
-    setPromoApplied(null);
+  const handleRemovePromo = () => {
+    removePromo();
     setPromoInput("");
     toast.info("Promo code removed");
   };
@@ -165,19 +163,19 @@ export default function CartPage() {
                   {shipping === 0 ? (
                     <span className="text-primary">Free</span>
                   ) : (
-                    formatPrice(shipping)
+                    <span className="text-stone-500">Calculated at checkout</span>
                   )}
                 </span>
               </div>
-              {shipping > 0 && (
+              {!qualifiesForFreeDelivery && (
                 <p className="text-xs text-stone-400">
-                  Add {formatPrice(100000 - subtotal)} more for free shipping!
+                  Add {formatPrice(100000 - subtotal)} more for free delivery, or enter your city at checkout for the exact price.
                 </p>
               )}
-              {promoApplied && (
+              {promo && (
                 <div className="flex justify-between text-[15px] text-primary">
-                  <span>Discount ({promoApplied.code})</span>
-                  <span className="font-medium">-{formatPrice(promoApplied.discount)}</span>
+                  <span>Discount ({promo.code})</span>
+                  <span className="font-medium">-{formatPrice(promo.discount)}</span>
                 </div>
               )}
               <div className="my-4 h-px bg-stone-100" />
@@ -188,7 +186,7 @@ export default function CartPage() {
             </div>
 
             {/* Promo Code */}
-            {!promoApplied ? (
+            {!promo ? (
               <div className="mt-6 space-y-3">
                 <label className="text-sm font-medium text-stone-700">Promo Code</label>
                 <div className="flex gap-2">
@@ -201,7 +199,7 @@ export default function CartPage() {
                   <button
                     type="button"
                     className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-stone-200 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-50"
-                    onClick={applyPromo}
+                    onClick={handleApplyPromo}
                   >
                     <Tag className="h-3.5 w-3.5" /> Apply
                   </button>
@@ -212,12 +210,12 @@ export default function CartPage() {
               <div className="mt-6 flex items-center justify-between rounded-xl bg-primary/5 px-4 py-3">
                 <div className="flex items-center gap-2 text-sm text-primary">
                   <Check className="h-4 w-4" />
-                  <span className="font-medium">Code {promoApplied.code} applied</span>
+                  <span className="font-medium">Code {promo.code} applied</span>
                 </div>
                 <button
                   type="button"
                   className="text-sm font-medium text-stone-500 transition-colors hover:text-stone-900"
-                  onClick={removePromo}
+                  onClick={handleRemovePromo}
                 >
                   Remove
                 </button>

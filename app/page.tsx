@@ -80,7 +80,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {[
-              { icon: Truck, title: "Free Delivery", desc: "On orders over ₦100,000" },
+              { icon: Truck, title: "Free Delivery", desc: "On orders over ₦100,000 or calculated by location" },
               { icon: ShieldCheck, title: "100% Authentic", desc: "Genuine products only" },
               { icon: Star, title: "Top Rated", desc: "Loved by Nigerian athletes" },
               { icon: Clock, title: "Fast Delivery", desc: "Lagos same-day available" },
