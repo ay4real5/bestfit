@@ -1,6 +1,27 @@
 import { Product } from "./types";
 import { supabaseAdmin } from "./supabase";
 
+function mapSupabaseProduct(row: Record<string, unknown>): Product {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    slug: row.slug as string,
+    description: row.description as string,
+    price: Number(row.price),
+    compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : undefined,
+    image: row.image as string,
+    category: row.category as string,
+    tags: (row.tags as string[]) || [],
+    inStock: row.in_stock === true || row.in_stock === "true" || (row.in_stock as boolean) === true,
+    inventory: Number(row.inventory || 0),
+    featured: row.featured === true || row.featured === "true" || (row.featured as boolean) === true,
+    weight: row.weight as string | undefined,
+    servings: row.servings ? Number(row.servings) : undefined,
+    createdAt: (row.created_at as string) || new Date().toISOString(),
+    deliveryCost: Number(row.delivery_cost || 0),
+  };
+}
+
 export async function readProducts(): Promise<Product[]> {
   const { data, error } = await supabaseAdmin
     .from('products')
@@ -12,7 +33,7 @@ export async function readProducts(): Promise<Product[]> {
     return [];
   }
 
-  return data || [];
+  return (data || []).map(mapSupabaseProduct);
 }
 
 export async function getProductById(id: string): Promise<Product | undefined> {
@@ -27,7 +48,7 @@ export async function getProductById(id: string): Promise<Product | undefined> {
     return undefined;
   }
 
-  return data;
+  return data ? mapSupabaseProduct(data as Record<string, unknown>) : undefined;
 }
 
 export async function getProductBySlugDb(slug: string): Promise<Product | undefined> {
@@ -42,7 +63,7 @@ export async function getProductBySlugDb(slug: string): Promise<Product | undefi
     return undefined;
   }
 
-  return data;
+  return data ? mapSupabaseProduct(data as Record<string, unknown>) : undefined;
 }
 
 export async function getFeaturedProductsDb(): Promise<Product[]> {
@@ -57,7 +78,7 @@ export async function getFeaturedProductsDb(): Promise<Product[]> {
     return [];
   }
 
-  return data || [];
+  return (data || []).map(mapSupabaseProduct);
 }
 
 export async function getProductsByCategoryDb(category: string): Promise<Product[]> {
@@ -72,7 +93,7 @@ export async function getProductsByCategoryDb(category: string): Promise<Product
     return [];
   }
 
-  return data || [];
+  return (data || []).map(mapSupabaseProduct);
 }
 
 export async function addProductDb(product: Product): Promise<void> {
